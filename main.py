@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 
 from utils import topic_regex, endpoint, thread_id_regex, script_val_regex, data_url_regex, post_id_regex, escape_symbol
 
-loop = asyncio.ProactorEventLoop()
+loop = asyncio.new_event_loop()
 
 pool = aiohttp.TCPConnector(loop=loop, ttl_dns_cache=60, force_close=True)
 
