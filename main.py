@@ -23,10 +23,9 @@ pool = aiohttp.TCPConnector(loop=loop, limit=1000, ttl_dns_cache=60, force_close
 
 
 class Post:
-    def __init__(self, name: str, create_date="", last_reply="", link=""):
+    def __init__(self, name: str, create_date="", link=""):
         self.name = name
         self.create_date = create_date
-        self.last_reply = last_reply
         self.link = link
         self.content = ""
 
@@ -75,7 +74,6 @@ class Thread:
                         post_link = a_elem.get("href", "")
                         post.link = (endpoint + post_link[1:] if re.match(post_id_regex, a_elem.get("href", ""))
                                      else post_link)
-                        post.last_reply = col['last_reply']
                         post.create_date = BeautifulSoup(col['cdate'], "html.parser").div.text
                         rows.append(post)
                 return rows
@@ -175,7 +173,6 @@ async def save_posts(name: str, thread: Thread):
                 await file.write("\n".join((
                     "========== INFO ==========",
                     f"Create Date: {index.create_date}",
-                    f"Last Reply: {index.last_reply}",
                     "==========================",
                     ""
                 )))
