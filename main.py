@@ -11,7 +11,6 @@ from typing import List
 
 import aiohttp
 import re
-from os.path import exists
 from aiofiles import os
 from aiofiles import open
 from bs4 import BeautifulSoup
@@ -20,7 +19,7 @@ from utils import topic_regex, endpoint, thread_id_regex, script_val_regex, data
 
 loop = asyncio.new_event_loop()
 
-pool = aiohttp.TCPConnector(loop=loop, ttl_dns_cache=60, force_close=True)
+pool = aiohttp.TCPConnector(loop=loop, limit=1000, ttl_dns_cache=60, force_close=True)
 
 
 class Post:
@@ -157,8 +156,16 @@ async def save_posts(name: str, thread: Thread):
         pass
     print(f"- Mkdir {folder_sub_name}")
     if thread.last_update.strip():
+        file_path = f"{folder_sub_name}/LAST_UPDATE.txt"
+        try:
+            async with open(file_path) as file:
+                if (await file.read()).strip() == thread.last_update.strip():
+                    print("- Latest update")
+                    return
+        except FileNotFoundError:
+            pass
         print("- Writing last update")
-        async with open(f"{folder_sub_name}/LAST_UPDATE.txt", "w") as file:
+        async with open(file_path, "w") as file:
             await file.write(thread.last_update)
     for pos, index in enumerate(await thread.get_index()):
         txt_name = escape_symbol(f"{pos}  {index.name}")
