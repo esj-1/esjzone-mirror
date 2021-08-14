@@ -1,0 +1,59 @@
+name: Sync-ESJZone
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  NODE_OPTIONS: '--max_old_space_size=5120'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: Setup PyPy3
+        uses: actions/setup-python@v2
+        with:
+          python-version: 'pypy-3.7'
+
+      - name: Cache Requirements
+        uses: actions/cache@v2
+        with:
+          key: pip-cache-${{ hashFiles('requirements/*.txt') }}
+          path: ~/.cache/pip
+          restore-keys: pip-cache-
+
+      - name: Install Python dependencies
+        run: pip install -q -r requirements.txt
+
+      - name: Sync ESJZone
+        run: python main.py
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          cache: 'yarn'
+          check-latest: true
+
+      - name: Install npm dependencies
+        run: yarn install
+
+      - name: 🛠 Build
+        run: yarn docs:build
+
+      - name: 🚀 Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          token: ${{ secrets.PA_TOKEN }}
+          branch: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+          FOLDER: docs/.vuepress/dist
