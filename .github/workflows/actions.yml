@@ -5,10 +5,11 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+env:
+  NODE_OPTIONS: '--max_old_space_size=5120'
+
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -16,58 +17,43 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
 
       - name: Setup PyPy3
         uses: actions/setup-python@v2
         with:
-          python-version: "pypy-3.7"
+          python-version: 'pypy-3.7'
 
       - name: Cache Requirements
         uses: actions/cache@v2
         with:
           key: pip-cache-${{ hashFiles('requirements/*.txt') }}
           path: ~/.cache/pip
-          restore-keys: |
-            pip-cache-
+          restore-keys: pip-cache-
 
-      - name: Cache Novels
-        uses: actions/cache@v2
-        with:
-          key: novel-cache-${{ hashFiles('docs/論壇/**/*.md') }}
-          path: ~/.cache/novels
-          restore-keys: |
-            novel-cache-
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      - name: Install Python dependencies
+        run: pip install -q -r requirements.txt
 
       - name: Sync ESJZone
-        run: |
-          python main.py
+        run: python main.py
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache Packages
-        id: yarn-cache
-        uses: actions/cache@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: '14.x'
+          cache: 'yarn'
+          check-latest: true
 
-      - name: Install and build
-        run: |
-          yarn install
-          yarn --max-old-space-size=4096 docs:build
+      - name: Install npm dependencies
+        run: yarn install
 
-      - name: Deploy webpage
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+      - name: 🛠 Build
+        run: yarn docs:build
+
+      - name: 🚀 Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
+          token: ${{ secrets.PA_TOKEN }}
+          branch: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
           FOLDER: docs/.vuepress/dist
