@@ -3,13 +3,13 @@ name: Sync-ESJZone
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 16 * * *'
 
 env:
   NODE_OPTIONS: '--max_old_space_size=5120'
 
 jobs:
-  build:
+  sync-and-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,12 +30,12 @@ jobs:
         with:
           key: pip-cache-${{ hashFiles('requirements/*.txt') }}
           path: ~/.cache/pip
-          restore-keys: pip-cache-
+          restore-keys: 'pip-cache-'
 
       - name: Install Python dependencies
         run: pip install -q -r requirements.txt
 
-      - name: Sync ESJZone
+      - name: 🔄 Sync ESJZone
         run: python main.py
 
       - name: Use Node.js
@@ -49,11 +49,13 @@ jobs:
         run: yarn install
 
       - name: 🛠 Build
-        run: yarn docs:build
+        run: |
+          chmod +x docs/.vuepress/scripts/build.sh
+          yarn docs:build
 
       - name: 🚀 Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           token: ${{ secrets.PA_TOKEN }}
           branch: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
-          FOLDER: docs/.vuepress/dist
+          folder: docs/.vuepress/dist
