@@ -34,6 +34,7 @@ jobs:
           pip install -q --upgrade pip
           pip install -q -r requirements.txt
 
+      # Get list from backup server, generate fake fetch message & delay
       - name: 🔄 Sync ESJZone
         run: python main.py
 
@@ -52,9 +53,11 @@ jobs:
           chmod +x docs/.vuepress/scripts/build.sh
           docs/.vuepress/scripts/build.sh
 
+      # Request update check from private server, sync logs and download files
       - name: 🛠 Build
         run: yarn docs:build
 
+      # Push downloaded files to production
       - name: 🚀 Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
