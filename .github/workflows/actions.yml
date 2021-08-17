@@ -41,7 +41,6 @@ jobs:
         with:
           node-version: '14.x'
           cache: 'yarn'
-          check-latest: true
 
       - name: 📥 Install npm dependencies
         run: yarn install
