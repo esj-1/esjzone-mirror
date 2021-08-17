@@ -5,9 +5,6 @@ on:
   schedule:
     - cron: '0 16 * * *'
 
-env:
-  NODE_OPTIONS: '--max_old_space_size=5120'
-
 jobs:
   sync-and-build:
     runs-on: ubuntu-latest
