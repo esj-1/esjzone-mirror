@@ -30,9 +30,7 @@ jobs:
           restore-keys: 'pip-cache-'
 
       - name: 📥 Install Python dependencies
-        run: |
-          pip install -q --upgrade pip
-          pip install -q -r requirements.txt
+        run: pip install -q -r requirements.txt
 
       # Get list from backup server, generate fake fetch message & delay
       - name: 🔄 Sync ESJZone
