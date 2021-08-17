@@ -44,9 +44,7 @@ jobs:
           check-latest: true
 
       - name: 📥 Install npm dependencies
-        run: |
-          npx browserslist@latest --update-db
-          yarn install
+        run: yarn install
 
       - name: ⚙ Patch files
         run: |
