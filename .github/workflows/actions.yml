@@ -61,8 +61,8 @@ jobs:
       - name: 🚀 Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
           branch: gh-pages
-          silent: true
           folder: docs/.vuepress/dist
           token: ${{ secrets.PA_TOKEN }}
+          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+          silent: true
