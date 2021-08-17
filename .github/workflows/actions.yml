@@ -48,7 +48,7 @@ jobs:
           check-latest: true
 
       - name: 📥 Install npm dependencies
-        run: yarn install --quiet --no-progress
+        run: yarn install
 
       - name: ⚙ Patch files
         run: |
@@ -56,7 +56,7 @@ jobs:
           docs/.vuepress/scripts/build.sh
 
       - name: 🛠 Build
-        run: yarn docs:build --verbose # --quiet
+        run: yarn docs:build
 
       - name: 🚀 Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
