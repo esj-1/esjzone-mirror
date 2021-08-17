@@ -63,6 +63,6 @@ jobs:
         with:
           repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
           branch: gh-pages
-#          silent: true
+          silent: true
           folder: docs/.vuepress/dist
           token: ${{ secrets.PA_TOKEN }}
