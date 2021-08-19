@@ -58,7 +58,7 @@ jobs:
 
       # Push downloaded files to production
       - name: 🚀 Deploy 🚀
-        if: steps.build_status.outcome == "success"  # Only deploy when success
+        if: steps.build_status.outcome == success  # Only deploy when success
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
