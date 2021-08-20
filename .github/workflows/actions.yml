@@ -33,7 +33,7 @@ jobs:
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
-          python venv venv
+          python -m venv venv
           venv/bin/pip install -q -r requirements.txt
 
       # Get list from backup server, generate fake fetch message & delay
