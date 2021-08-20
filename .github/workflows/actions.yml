@@ -51,7 +51,7 @@ jobs:
   build-client:
     name: 構建 client.json
     runs-on: macos-latest
-    needs: sync
+    needs: sync-esjzone
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -94,7 +94,7 @@ jobs:
   build-server:
     name: 構建 server.json
     runs-on: macos-latest
-    needs: sync
+    needs: sync-esjzone
 
     steps:
       - name: 📥 Checkout Actions 📥
