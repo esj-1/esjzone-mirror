@@ -174,7 +174,12 @@ jobs:
           name: client-manifest
           path: docs/.vuepress/dist/manifest/client.json
 
-      - name: ⚙ Render pages ⚙
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/build.sh
+          docs/.vuepress/scripts/build.sh
+
+      - name: ⚙ Render ⚙
         run: yarn docs:render_pages
 
       # Push downloaded files to production
