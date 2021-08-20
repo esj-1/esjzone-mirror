@@ -198,19 +198,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: server-manifest
-          path: ~/docs/.vuepress/dist/manifest/server.json
+          path: ~/esjzone-mirror/docs/.vuepress/dist/manifest/server.json
 
       - name: 📥 Download client manifest 📥
         uses: actions/download-artifact@v2
         with:
           name: client-manifest
-          path: ~/docs/.vuepress/dist/manifest/client.json
+          path: ~/esjzone-mirror/docs/.vuepress/dist/manifest/client.json
 
       - name: 📥 Download assets 📥
         uses: actions/download-artifact@v2
         with:
           name: assets
-          path: ~/docs/.vuepress/dist/assets
+          path: ~/esjzone-mirror/docs/.vuepress/dist/assets
 
       - name: 🛠 Patch files 🛠
         run: |
