@@ -129,7 +129,6 @@ jobs:
           docs/.vuepress/scripts/build.sh
 
       - name: ⚙ Build ⚙
-        id: build_status
         run: yarn docs:build_server
 
       - name: 📤 Upload server manifest 📤
@@ -170,9 +169,18 @@ jobs:
           name: client-manifest
           path: docs/.vuepress/dist/manifest/client.json
 
-      - name: Debug
-        run: ls -la docs/.vuepress/dist/manifest
+      - name: ⚙ Render pages ⚙
+        run: yarn docs:render_pages
 
+      # Push downloaded files to production
+      - name: 🚀 Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs/.vuepress/dist
+          token: ${{ secrets.PA_TOKEN }}
+          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+          silent: true
 
 #  sync-and-build:
 #    runs-on: macos-latest
