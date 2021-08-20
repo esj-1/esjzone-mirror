@@ -85,9 +85,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: 📥 Install npm dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install
+      - name: 📥 Install yarn dependencies 📥
+        # if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: |
+          npx browserslist@latest --update-db
+          yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -149,8 +151,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: 📥 Install npm dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install
+        #if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: |
+          npx browserslist@latest --update-db
+          yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -181,14 +185,13 @@ jobs:
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
-        id: cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           cache: 'yarn'
 
       - name: 📥 Install npm dependencies 📥
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        #if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
       - name: 📥 Download server manifest 📥
@@ -203,7 +206,7 @@ jobs:
           name: client-manifest
           path: docs/.vuepress/dist/manifest/client.json
 
-      - name: 📤 Upload assets 📤
+      - name: 📥 Download assets 📥
         uses: actions/download-artifact@v2
         with:
           name: assets
