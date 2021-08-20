@@ -26,17 +26,19 @@ jobs:
         id: cache
         uses: actions/cache@v2
         with:
-          key: pip-cache-${{ hashFiles('**/requirements.txt') }}
-          path: ~/Library/Caches/pip
-          restore-keys: pip-cache-
+          key: venv-cache-${{ hashFiles('**/requirements.txt') }}
+          path: venv
+          restore-keys: venv-cache-
 
       - name: 📥 Install dependencies 📥
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        run: pip install -q -r requirements.txt
+        # if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: |
+          pip venv venv
+          venv/bin/pip install -q -r requirements.txt
 
       # Get list from backup server, generate fake fetch message & delay
       - name: 🔄 Sync ESJZone 🔄
-        run: python main.py
+        run: venv/bin/python main.py
 
       - name: 📤 Upload novel directory 📤
         uses: actions/upload-artifact@v2
