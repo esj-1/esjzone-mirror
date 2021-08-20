@@ -77,13 +77,13 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v2
+      - name: 💾 Cache yarn dependencies 💾
+        uses: actions/cache@v2
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          restore-keys: ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
         # if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
@@ -142,13 +142,13 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v2
+      - name: 💾 Cache yarn dependencies 💾
+        uses: actions/cache@v2
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          restore-keys: ${{ runner.os }}-yarn-
 
       - name: 📥 Install npm dependencies 📥
         #if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
@@ -198,19 +198,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: server-manifest
-          path: docs/.vuepress/dist/manifest/server.json
+          path: ~/docs/.vuepress/dist/manifest/server.json
 
       - name: 📥 Download client manifest 📥
         uses: actions/download-artifact@v2
         with:
           name: client-manifest
-          path: docs/.vuepress/dist/manifest/client.json
+          path: ~/docs/.vuepress/dist/manifest/client.json
 
       - name: 📥 Download assets 📥
         uses: actions/download-artifact@v2
         with:
           name: assets
-          path: docs/.vuepress/dist/assets
+          path: ~/docs/.vuepress/dist/assets
 
       - name: 🛠 Patch files 🛠
         run: |
