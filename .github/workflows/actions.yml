@@ -152,10 +152,15 @@ jobs:
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
+        id: cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           cache: 'yarn'
+
+      - name: 📥 Install npm dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: yarn install
 
       - name: 📥 Download server manifest 📥
         uses: actions/download-artifact@v2
