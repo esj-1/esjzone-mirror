@@ -31,9 +31,9 @@ jobs:
           restore-keys: venv-cache-
 
       - name: 📥 Install dependencies 📥
-        # if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
-          pip venv venv
+          python venv venv
           venv/bin/pip install -q -r requirements.txt
 
       # Get list from backup server, generate fake fetch message & delay
