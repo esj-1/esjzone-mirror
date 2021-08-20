@@ -41,15 +41,12 @@ jobs:
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python main.py
 
-      - name: 📦 Zip novel directory 📦
-        run: gzip -r docs/forum --fast > novels.gz
-
       - name: 📤 Upload novel directory 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: novel-gzip
-          path: novels.gz
+          name: novel-dir
+          path: docs/forum/
 
   build-client:
     name: 構建 client.json
@@ -67,10 +64,8 @@ jobs:
       - name: 📥 Download novel directory 📥
         uses: actions/download-artifact@v2
         with:
-          name: novel-gzip
-
-      - name: 📂 Unzip novel directory 📂
-        run: gzip -d novels.gz -r docs/forum
+          name: novel-dir
+          path: docs/forum/
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -102,9 +97,6 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
 
-      - name: 📦 Zip novel directory 📦
-        run: gzip -r docs/.vuepress/dist/assets --fast > assets.gz
-
       - name: 📤 Upload client manifest 📤
         uses: actions/upload-artifact@v2
         with:
@@ -117,7 +109,7 @@ jobs:
         with:
           if-no-files-found: error
           name: assets
-          path: assets.gz
+          path: docs/.vuepress/dist/assets
 
   build-server:
     name: 構建 server.json
@@ -135,10 +127,8 @@ jobs:
       - name: 📥 Download novel directory 📥
         uses: actions/download-artifact@v2
         with:
-          name: novel-gzip
-
-      - name: 📂 Unzip novel directory 📂
-        run: gzip -d novels.gz -r docs/forum
+          name: novel-dir
+          path: docs/forum/
 
       - name: ✅ Use Node.js ✅
         id: server_cache
@@ -213,13 +203,11 @@ jobs:
           name: client-manifest
           path: docs/.vuepress/dist/manifest/client.json
 
-      - name: 📥 Download assets 📥
+      - name: 📤 Upload assets 📤
         uses: actions/download-artifact@v2
         with:
           name: assets
-
-      - name: 📂 Unzip assets 📂
-        run: gzip -d assets.gz -r docs/.vuepress/dist/assets
+          path: docs/.vuepress/dist/assets
 
       - name: 🛠 Patch files 🛠
         run: |
