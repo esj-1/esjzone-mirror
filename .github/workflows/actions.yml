@@ -6,7 +6,7 @@ on:
     - cron: '0 16 * * *'
 
 jobs:
-  sync-and-build:
+  sync:
     runs-on: macos-latest
 
     steps:
@@ -23,18 +23,44 @@ jobs:
           python-version: 'pypy-3.7'
 
       - name: 💾 Cache Python requirements 💾
+        id: cache
         uses: actions/cache@v2
         with:
-          key: pip-cache-${{ hashFiles('requirements/*.txt') }}
-          path: ~/.cache/pip
-          restore-keys: pip-cache-${{ hashFiles('requirements/*.txt') }}
+          key: pip-cache-${{ hashFiles('**/requirements.txt') }}
+          path: ~/Library/Caches/pip
+          restore-keys: pip-cache-
 
-      - name: 📥 Install Python dependencies 📥
+      - name: 📥 Install dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: pip install -q -r requirements.txt
 
       # Get list from backup server, generate fake fetch message & delay
       - name: 🔄 Sync ESJZone 🔄
         run: python main.py
+
+      - name: 📤 Upload novel directory 📤
+        uses: actions/cache@v2
+        with:
+          name: novel-dir
+          path: docs/forum/
+
+  build-client:
+    runs-on: macos-latest
+    needs: sync
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: 📥 Download novel directory 📥
+        uses: actions/download-artifact@v2
+        with:
+          name: novel-dir
+          path: docs/forum/
 
       - name: ✅ Use Node.js ✅
         uses: actions/setup-node@v2
@@ -50,22 +76,151 @@ jobs:
           chmod +x docs/.vuepress/scripts/build.sh
           docs/.vuepress/scripts/build.sh
 
-      # Request update check from private server, sync logs and download files
+      - name: ⚙ Build ⚙
+        run: yarn docs:build_client
+
+      - name: 📤 Upload client manifest 📤
+        uses: actions/upload-artifact@v2
+        with:
+          name: client-manifest
+          path: docs/.vuepress/dist/manifest/client.json
+
+  build-server:
+    runs-on: macos-latest
+    needs: sync
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: 📥 Download novel directory 📥
+        uses: actions/download-artifact@v2
+        with:
+          name: novel-dir
+          path: docs/forum/
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          cache: 'yarn'
+
+      - name: 📥 Install npm dependencies 📥
+        run: yarn install
+
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/build.sh
+          docs/.vuepress/scripts/build.sh
+
       - name: ⚙ Build ⚙
         id: build_status
-        continue-on-error: true
-        run: yarn docs:build
+        run: yarn docs:build_server
 
-      # Push downloaded files to production
-      - name: 🚀 Deploy 🚀
-        if: ${{ steps.build_status.outcome == 'success' }}  # Only deploy when success
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+      - name: 📤 Upload server manifest 📤
+        uses: actions/upload-artifact@v2
         with:
-          branch: gh-pages
-          folder: docs/.vuepress/dist
-          token: ${{ secrets.PA_TOKEN }}
-          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
-          silent: true
+          name: server-manifest
+          path: docs/.vuepress/dist/manifest/server.json
 
-      - name: 📝 Reserved job 📝
-        run: echo "Reserved"
+  render-and-deploy:
+    runs-on: macos-latest
+    needs: [build-client, build-server]
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          cache: 'yarn'
+
+      - name: 📥 Download server manifest 📥
+        uses: actions/download-artifact@v2
+        with:
+          name: server-manifest
+          path: docs/.vuepress/dist/manifest/server.json
+
+      - name: 📥 Download client manifest 📥
+        uses: actions/download-artifact@v2
+        with:
+          name: client-manifest
+          path: docs/.vuepress/dist/manifest/client.json
+
+      - name: Debug
+        run: ls -la docs/.vuepress/dist/manifest
+
+
+#  sync-and-build:
+#    runs-on: macos-latest
+#
+#    steps:
+#      - name: 📥 Checkout Actions 📥
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+#          token: ${{ secrets.PA_TOKEN }}
+#
+#      - name: ✅ Use PyPy3 ✅
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: 'pypy-3.7'
+#
+#      - name: 💾 Cache Python requirements 💾
+#        uses: actions/cache@v2
+#        with:
+#          key: pip-cache-${{ hashFiles('requirements/*.txt') }}
+#          path: ~/.cache/pip
+#          restore-keys: pip-cache-${{ hashFiles('requirements/*.txt') }}
+#
+#      - name: 📥 Install Python dependencies 📥
+#        run: pip install -q -r requirements.txt
+#
+#      # Get list from backup server, generate fake fetch message & delay
+#      - name: 🔄 Sync ESJZone 🔄
+#        run: python main.py
+#
+#      - name: ✅ Use Node.js ✅
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: '14.x'
+#          cache: 'yarn'
+#
+#      - name: 📥 Install npm dependencies 📥
+#        run: yarn install
+#
+#      - name: 🛠 Patch files 🛠
+#        run: |
+#          chmod +x docs/.vuepress/scripts/build.sh
+#          docs/.vuepress/scripts/build.sh
+#
+#      # Request update check from private server, sync logs and download files
+#      - name: ⚙ Build ⚙
+#        id: build_status
+#        continue-on-error: true
+#        run: yarn docs:build
+#
+#      # Push downloaded files to production
+#      - name: 🚀 Deploy 🚀
+#        if: ${{ steps.build_status.outcome == 'success' }}  # Only deploy when success
+#        uses: JamesIves/github-pages-deploy-action@4.1.4
+#        with:
+#          branch: gh-pages
+#          folder: docs/.vuepress/dist
+#          token: ${{ secrets.PA_TOKEN }}
+#          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+#          silent: true
+#
+#      - name: 📝 Reserved job 📝
+#        run: echo "Reserved"
