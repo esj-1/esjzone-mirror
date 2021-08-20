@@ -194,28 +194,28 @@ jobs:
         #if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
-      - name: Create folders
-        run: |
-          mkdir docs/.vuepress/dist
-          mkdir docs/.vuepress/dist/manifest
-
       - name: 📥 Download server manifest 📥
         uses: actions/download-artifact@v2
         with:
           name: server-manifest
-          path: docs/.vuepress/dist/manifest/server.json
+          path: docs/.vuepress/dist/manifest
 
       - name: 📥 Download client manifest 📥
         uses: actions/download-artifact@v2
         with:
           name: client-manifest
-          path: docs/.vuepress/dist/manifest/client.json
+          path: docs/.vuepress/dist/manifest
 
       - name: 📥 Download assets 📥
         uses: actions/download-artifact@v2
         with:
           name: assets
           path: docs/.vuepress/dist/assets
+
+      - name: List
+        run: |
+          brew install tree
+          tree docs
 
       - name: 🛠 Patch files 🛠
         run: |
