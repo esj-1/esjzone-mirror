@@ -6,7 +6,8 @@ on:
     - cron: '0 16 * * *'
 
 jobs:
-  sync:
+  sync-esjzone:
+    name: 同步 ESJZone
     runs-on: macos-latest
 
     steps:
@@ -43,10 +44,12 @@ jobs:
       - name: 📤 Upload novel directory 📤
         uses: actions/upload-artifact@v2
         with:
+          if-no-files-found: error
           name: novel-dir
           path: docs/forum/
 
   build-client:
+    name: 構建 client.json
     runs-on: macos-latest
     needs: sync
 
@@ -84,10 +87,12 @@ jobs:
       - name: 📤 Upload client manifest 📤
         uses: actions/upload-artifact@v2
         with:
+          if-no-files-found: error
           name: client-manifest
           path: docs/.vuepress/dist/manifest/client.json
 
   build-server:
+    name: 構建 server.json
     runs-on: macos-latest
     needs: sync
 
@@ -126,10 +131,12 @@ jobs:
       - name: 📤 Upload server manifest 📤
         uses: actions/upload-artifact@v2
         with:
+          if-no-files-found: error
           name: server-manifest
           path: docs/.vuepress/dist/manifest/server.json
 
   render-and-deploy:
+    name: 轉換頁面並部署
     runs-on: macos-latest
     needs: [build-client, build-server]
 
