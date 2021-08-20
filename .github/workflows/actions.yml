@@ -68,12 +68,14 @@ jobs:
           path: docs/forum/
 
       - name: ✅ Use Node.js ✅
+        id: client_cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           cache: 'yarn'
 
       - name: 📥 Install npm dependencies 📥
+        if: ${{ steps.client_cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
       - name: 🛠 Patch files 🛠
@@ -111,12 +113,14 @@ jobs:
           path: docs/forum/
 
       - name: ✅ Use Node.js ✅
+        id: server_cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           cache: 'yarn'
 
       - name: 📥 Install npm dependencies 📥
+        if: ${{ steps.server_cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
       - name: 🛠 Patch files 🛠
