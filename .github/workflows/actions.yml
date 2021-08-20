@@ -1,4 +1,4 @@
-name: Sync-ESJZone
+name: 同步小説網頁
 
 on:
   workflow_dispatch:
