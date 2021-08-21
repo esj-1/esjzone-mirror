@@ -199,6 +199,9 @@ jobs:
           tar -xzf docs/forum/novels.gz
           tar -xzf docs/.vuepress/dist/clint-dist.gz
           tar -xzf docs/.vuepress/dist/server-dist.gz
+          ls docs/forum
+          ls docs/.vuepress/dist
+          rm docs/forum/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
 
       - name: 🛠 Patch files 🛠
         run: |
