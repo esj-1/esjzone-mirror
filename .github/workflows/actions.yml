@@ -41,7 +41,7 @@ jobs:
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python main.py
 
-      - name: Compress novel directory
+      - name: 📦 Compress novel directory 📦
         run: tar -czf novels.gz docs/forum
 
       - name: 📤 Upload novel gzip 📤
@@ -70,7 +70,7 @@ jobs:
           name: novel-gzip
           path: docs/forum
 
-      - name: Unzip novels
+      - name: 📂 Unzip novels 📂
         run: tar -xzf docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
@@ -92,12 +92,15 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
 
-      - name: 📤 Upload dist folder 📤
+      - name: 📦 Compress dist directory 📦
+        run: tar -czf clint-dist.gz docs/.vuepress/dist
+
+      - name: 📤 Upload dist gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: client-dist
-          path: docs/.vuepress/dist
+          name: client-gzip
+          path: clint-dist.gz
 
   build-server:
     name: 構建 server.json
@@ -118,7 +121,7 @@ jobs:
           name: novel-gzip
           path: docs/forum
 
-      - name: Unzip novels
+      - name: 📂 Unzip novels 📂
         run: tar -xzf docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
@@ -140,12 +143,15 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
 
-      - name: 📤 Upload dist folder 📤
+      - name: 📦 Compress dist directory 📦
+        run: tar -czf server-dist.gz docs/.vuepress/dist
+
+      - name: 📤 Upload dist gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: server-dist
-          path: docs/.vuepress/dist
+          name: server-gzip
+          path: server-dist.gz
 
   render-and-deploy:
     name: 轉換頁面並部署
@@ -170,16 +176,16 @@ jobs:
         with:
           install-command: yarn install
 
-      - name: 📥 Download server dist folder 📥
+      - name: 📥 Download server dist gzip 📥
         uses: actions/download-artifact@v2
         with:
-          name: server-dist
+          name: server-gzip
           path: docs/.vuepress/dist
 
-      - name: 📥 Download client dist folder 📥
+      - name: 📥 Download client dist gzip 📥
         uses: actions/download-artifact@v2
         with:
-          name: client-dist
+          name: client-gzip
           path: docs/.vuepress/dist
 
       - name: 📥 Download novel gzip 📥
@@ -188,8 +194,11 @@ jobs:
           name: novel-gzip
           path: docs/forum
 
-      - name: Unzip novels
-        run: gzip -dr docs/forum/novels.gz
+      - name: 📂 Unzip files 📂
+        run: |
+          tar -xzf docs/forum/novels.gz
+          tar -xzf docs/.vuepress/dist/clint-dist.gz
+          tar -xzf docs/.vuepress/dist/server-dist.gz
 
       - name: 🛠 Patch files 🛠
         run: |
