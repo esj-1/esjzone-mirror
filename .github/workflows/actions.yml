@@ -42,7 +42,7 @@ jobs:
         run: venv/bin/python main.py
 
       - name: Zip novel directory
-        run: gzip --fast -r docs/forum > novels.gz
+        run: gzip --fast -vr docs/forum > novels.gz
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
