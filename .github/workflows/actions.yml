@@ -41,12 +41,15 @@ jobs:
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python main.py
 
-      - name: 📤 Upload novel directory 📤
+      - name: Zip novel directory
+        run: gzip --fast -r docs/forum > novels.gz
+
+      - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: novel-dir
-          path: docs/forum
+          name: novel-gzip
+          path: novels.gz
 
   build-client:
     name: 構建 client.json
@@ -61,11 +64,14 @@ jobs:
           ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: 📥 Download novel directory 📥
+      - name: 📥 Download novel gzip 📥
         uses: actions/download-artifact@v2
         with:
-          name: novel-dir
+          name: novel-gzip
           path: docs/forum
+
+      - name: Unzip novels
+        run: gzip -dr docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -106,11 +112,14 @@ jobs:
           ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: 📥 Download novel directory 📥
+      - name: 📥 Download novel gzip 📥
         uses: actions/download-artifact@v2
         with:
-          name: novel-dir
-          path: docs/forum/
+          name: novel-gzip
+          path: docs/forum
+
+      - name: Unzip novels
+        run: gzip -dr docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: server_cache
@@ -141,7 +150,7 @@ jobs:
   render-and-deploy:
     name: 轉換頁面並部署
     runs-on: macos-latest
-    needs: [build-client, build-server]
+    needs: [ build-client, build-server ]
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -173,11 +182,14 @@ jobs:
           name: client-dist
           path: docs/.vuepress/dist
 
-      - name: 📥 Download novel directory 📥
+      - name: 📥 Download novel gzip 📥
         uses: actions/download-artifact@v2
         with:
-          name: novel-dir
+          name: novel-gzip
           path: docs/forum
+
+      - name: Unzip novels
+        run: gzip -dr docs/forum/novels.gz
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -197,66 +209,14 @@ jobs:
           repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
           silent: true
 
-#  sync-and-build:
-#    runs-on: macos-latest
-#
-#    steps:
-#      - name: 📥 Checkout Actions 📥
-#        uses: actions/checkout@v2
-#        with:
-#          repository: ${{ secrets.PRIVATE_REPO }}
-#          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
-#          token: ${{ secrets.PA_TOKEN }}
-#
-#      - name: ✅ Use PyPy3 ✅
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: 'pypy-3.7'
-#
-#      - name: 💾 Cache Python requirements 💾
-#        uses: actions/cache@v2
-#        with:
-#          key: pip-cache-${{ hashFiles('requirements/*.txt') }}
-#          path: ~/.cache/pip
-#          restore-keys: pip-cache-${{ hashFiles('requirements/*.txt') }}
-#
-#      - name: 📥 Install Python dependencies 📥
-#        run: pip install -q -r requirements.txt
-#
-#      # Get list from backup server, generate fake fetch message & delay
-#      - name: 🔄 Sync ESJZone 🔄
-#        run: python main.py
-#
-#      - name: ✅ Use Node.js ✅
-#        uses: actions/setup-node@v2
-#        with:
-#          node-version: '14.x'
-#          cache: 'yarn'
-#
-#      - name: 📥 Install npm dependencies 📥
-#        run: yarn install
-#
-#      - name: 🛠 Patch files 🛠
-#        run: |
-#          chmod +x docs/.vuepress/scripts/build.sh
-#          docs/.vuepress/scripts/build.sh
-#
-#      # Request update check from private server, sync logs and download files
-#      - name: ⚙ Build ⚙
-#        id: build_status
-#        continue-on-error: true
-#        run: yarn docs:build
-#
-#      # Push downloaded files to production
-#      - name: 🚀 Deploy 🚀
-#        if: ${{ steps.build_status.outcome == 'success' }}  # Only deploy when success
-#        uses: JamesIves/github-pages-deploy-action@4.1.4
-#        with:
-#          branch: gh-pages
-#          folder: docs/.vuepress/dist
-#          token: ${{ secrets.PA_TOKEN }}
-#          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
-#          silent: true
-#
-#      - name: 📝 Reserved job 📝
-#        run: echo "Reserved"
+  clean-up:
+    name: 清理工作
+    runs-on: ubuntu-latest
+    if: always()
+    needs: render-and-deploy
+
+    steps:
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.PA_TOKEN }}
+          expire-in: 0s
