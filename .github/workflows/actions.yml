@@ -183,8 +183,8 @@ jobs:
           node-version: '14.x'
           cache: 'yarn'
 
-      - name: 📥 Install npm dependencies 📥
-        #if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
       - name: 📥 Download server dist folder 📥
