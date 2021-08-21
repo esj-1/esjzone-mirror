@@ -45,9 +45,7 @@ jobs:
         run: gzip --fast -r docs/forum > ~/novels.gz
 
       - name: ls
-        run: |
-          pwd
-          ls -la
+        run: ls -la ~/
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
