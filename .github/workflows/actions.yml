@@ -71,7 +71,7 @@ jobs:
           path: docs/forum
 
       - name: Unzip novels
-        run: sudo tar -xzf docs/forum/novels.gz
+        run: tar -xzf docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -119,7 +119,7 @@ jobs:
           path: docs/forum
 
       - name: Unzip novels
-        run: sudo tar -xzf docs/forum/novels.gz
+        run: tar -xzf docs/forum/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: server_cache
