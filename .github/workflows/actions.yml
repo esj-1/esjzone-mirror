@@ -131,23 +131,12 @@ jobs:
         with:
           node-version: '14.x'
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cache yarn dependencies 💾
-        uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
-
       - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: |
-          npx browserslist@latest --update-db
-          yarn install
+        uses: bahmutov/npm-install@HEAD
+        with:
+          install-command: |
+            npx browserslist@latest --update-db
+            yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -181,11 +170,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-          cache: 'yarn'
 
       - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        run: yarn install
+        uses: bahmutov/npm-install@HEAD
+        with:
+          install-command: |
+            npx browserslist@latest --update-db
+            yarn install
 
       - name: 📥 Download server dist folder 📥
         uses: actions/download-artifact@v2
