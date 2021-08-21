@@ -86,7 +86,7 @@ jobs:
           restore-keys: ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
-        # if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: |
           npx browserslist@latest --update-db
           yarn install
@@ -143,8 +143,8 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-
 
-      - name: 📥 Install npm dependencies 📥
-        #if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: |
           npx browserslist@latest --update-db
           yarn install
