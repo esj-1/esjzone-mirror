@@ -73,21 +73,10 @@ jobs:
         with:
           node-version: '14.x'
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cache yarn dependencies 💾
-        uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
-
       - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install
+        uses: bahmutov/npm-install@HEAD
+        with:
+          install-command: yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
