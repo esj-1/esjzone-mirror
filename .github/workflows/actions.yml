@@ -42,17 +42,17 @@ jobs:
         run: venv/bin/python main.py
 
       - name: Zip novel directory
-        run: gzip -r docs/forum/* -1
-
-      - name: ls
-        run: ls -la docs/
+        uses: papeloto/action-zip@v1
+        with:
+          files: docs/forum
+          dest: novels.zip
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
           name: novel-gzip
-          path: docs/forum.gz
+          path: novels.zip
 
   build-client:
     name: 構建 client.json
@@ -74,7 +74,7 @@ jobs:
           path: docs/forum
 
       - name: Unzip novels
-        run: gzip -dr docs/forum/novels.gz
+        run: unzip -dr docs/forum/novels.zip
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -122,7 +122,7 @@ jobs:
           path: docs/forum
 
       - name: Unzip novels
-        run: gzip -dr docs/forum/novels.gz
+        run: unzip -dr docs/forum/novels.zip
 
       - name: ✅ Use Node.js ✅
         id: server_cache
