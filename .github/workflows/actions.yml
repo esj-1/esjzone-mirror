@@ -42,7 +42,7 @@ jobs:
         run: venv/bin/python main.py
 
       - name: Zip novel directory
-        run: gzip -tr docs/forum -1
+        run: gzip -r docs/forum -1
 
       - name: ls
         run: ls -la docs/
@@ -52,7 +52,7 @@ jobs:
         with:
           if-no-files-found: error
           name: novel-gzip
-          path: docs/forum/forum.gz
+          path: docs/forum.gz
 
   build-client:
     name: 構建 client.json
