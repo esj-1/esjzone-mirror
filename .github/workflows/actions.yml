@@ -48,8 +48,8 @@ jobs:
           name: novel-dir
           path: docs/forum/
 
-  build-assets:
-    name: 構建 assets
+  build-client:
+    name: 構建 client.json
     runs-on: macos-latest
     needs: sync-esjzone
 
@@ -86,12 +86,12 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
 
-      - name: 📤 Upload assets 📤
+      - name: 📤 Upload dist folder 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: assets
-          path: docs/.vuepress/dist/assets
+          name: client-dist
+          path: docs/.vuepress/dist
 
   build-server:
     name: 構建 server.json
@@ -141,7 +141,7 @@ jobs:
   render-and-deploy:
     name: 轉換頁面並部署
     runs-on: macos-latest
-    needs: [build-assets, build-server]
+    needs: [build-client, build-server]
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -167,11 +167,11 @@ jobs:
           name: server-dist
           path: docs/.vuepress/dist
 
-      - name: 📥 Download assets 📥
+      - name: 📥 Download client dist folder 📥
         uses: actions/download-artifact@v2
         with:
-          name: assets
-          path: docs/.vuepress/dist/assets
+          name: client-dist
+          path: docs/.vuepress/dist
 
       - name: 🛠 Patch files 🛠
         run: |
