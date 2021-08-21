@@ -87,9 +87,7 @@ jobs:
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: |
-          npx browserslist@latest --update-db
-          yarn install
+        run: yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -134,9 +132,7 @@ jobs:
       - name: 📥 Install yarn dependencies 📥
         uses: bahmutov/npm-install@HEAD
         with:
-          install-command: |
-            npx browserslist@latest --update-db
-            yarn install
+          install-command: yarn install
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -174,9 +170,7 @@ jobs:
       - name: 📥 Install yarn dependencies 📥
         uses: bahmutov/npm-install@HEAD
         with:
-          install-command: |
-            npx browserslist@latest --update-db
-            yarn install
+          install-command: yarn install
 
       - name: 📥 Download server dist folder 📥
         uses: actions/download-artifact@v2
