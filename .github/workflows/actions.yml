@@ -46,7 +46,7 @@ jobs:
         with:
           if-no-files-found: error
           name: novel-dir
-          path: docs/forum/
+          path: docs/forum
 
   build-client:
     name: 構建 client.json
@@ -65,7 +65,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: novel-dir
-          path: docs/forum/
+          path: docs/forum
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -172,6 +172,12 @@ jobs:
         with:
           name: client-dist
           path: docs/.vuepress/dist
+
+      - name: 📥 Download novel directory 📥
+        uses: actions/download-artifact@v2
+        with:
+          name: novel-dir
+          path: docs/forum
 
       - name: 🛠 Patch files 🛠
         run: |
