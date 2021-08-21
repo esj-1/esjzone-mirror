@@ -42,14 +42,14 @@ jobs:
         run: venv/bin/python main.py
 
       - name: Zip novel directory
-        run: gzip --fast -vr docs/forum > novels.gz
+        run: gzip --fast -vr docs/forum > /tmp/novels.gz
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
           name: novel-gzip
-          path: novels.gz
+          path: /tmp/novels.gz
 
   build-client:
     name: 構建 client.json
