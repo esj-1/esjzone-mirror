@@ -41,18 +41,15 @@ jobs:
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python main.py
 
-      - name: Zip novel directory
-        uses: papeloto/action-zip@v1
-        with:
-          files: docs/forum
-          dest: novels.zip
+      - name: Compress novel directory
+        run: tar -czf novels.gz docs/forum
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
           name: novel-gzip
-          path: novels.zip
+          path: novels.gz
 
   build-client:
     name: 構建 client.json
@@ -71,10 +68,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: novel-gzip
-          path: docs/forum
 
       - name: Unzip novels
-        run: unzip -dr docs/forum/novels.zip
+        run: tar -xzf novels.gz -C docs/forum
 
       - name: ✅ Use Node.js ✅
         id: client_cache
