@@ -228,4 +228,4 @@ jobs:
       - uses: kolpav/purge-artifacts-action@v1
         with:
           token: ${{ secrets.PA_TOKEN }}
-          expire-in: 0s
+          expire-in: 0
