@@ -42,7 +42,7 @@ jobs:
         run: venv/bin/python main.py
 
       - name: Zip novel directory
-        run: gzip -r docs/forum -1
+        run: gzip -r docs/forum/ -1
 
       - name: ls
         run: ls -la docs/
