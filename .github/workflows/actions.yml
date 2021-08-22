@@ -80,26 +80,26 @@ jobs:
         with:
           node-version: '14.x'
 
-      - name: 📁  Get yarn cache directory path 📁
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cahce yarn 💾
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+#      - name: 📁  Get yarn cache directory path 📁
+#        id: yarn-cache-dir-path
+#        run: echo "::set-output name=dir::$(yarn cache dir)"
+#
+#      - name: 💾 Cahce yarn 💾
+#        uses: actions/cache@v2
+#        id: yarn-cache
+#        with:
+#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+#          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+#        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-      - name: 🗂 Install yarn dependencies offline 🗂
-        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-        run: yarn install --offline --silent
+#      - name: 🗂 Install yarn dependencies offline 🗂
+#        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+#        run: yarn install --offline --silent
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -148,26 +148,26 @@ jobs:
         with:
           node-version: '14.x'
 
-      - name: 📁  Get yarn cache directory path 📁
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cahce yarn 💾
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+#      - name: 📁  Get yarn cache directory path 📁
+#        id: yarn-cache-dir-path
+#        run: echo "::set-output name=dir::$(yarn cache dir)"
+#
+#      - name: 💾 Cahce yarn 💾
+#        uses: actions/cache@v2
+#        id: yarn-cache
+#        with:
+#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+#          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+#        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-      - name: 🗂 Install yarn dependencies offline 🗂
-        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-        run: yarn install --offline --silent
+#      - name: 🗂 Install yarn dependencies offline 🗂
+#        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+#        run: yarn install --offline --silent
 
       - name: 🛠 Patch files 🛠
         run: |
