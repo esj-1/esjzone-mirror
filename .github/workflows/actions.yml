@@ -50,6 +50,7 @@ jobs:
           if-no-files-found: error
           name: novel-gzip
           path: novels.gz
+          retention-days: 1
 
   build-client:
     name: 構建 client.json
@@ -117,6 +118,7 @@ jobs:
           if-no-files-found: error
           name: client-gzip
           path: clint-dist.gz
+          retention-days: 1
 
   build-server:
     name: 構建 server.json
@@ -184,6 +186,7 @@ jobs:
           if-no-files-found: error
           name: server-gzip
           path: server-dist.gz
+          retention-days: 1
 
   render-and-deploy:
     name: 轉換頁面並部署
