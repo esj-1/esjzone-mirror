@@ -79,10 +79,10 @@ jobs:
         with:
           node-version: '14.x'
 
+      - uses: c-hive/gha-yarn-cache@v2
+
       - name: 📥 Install yarn dependencies 📥
-        uses: bahmutov/npm-install@HEAD
-        with:
-          install-command: yarn install
+        run: yarn install --offline
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -130,10 +130,10 @@ jobs:
         with:
           node-version: '14.x'
 
+      - uses: c-hive/gha-yarn-cache@v2
+
       - name: 📥 Install yarn dependencies 📥
-        uses: bahmutov/npm-install@HEAD
-        with:
-          install-command: yarn install
+        run: yarn install --offline
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -171,10 +171,10 @@ jobs:
         with:
           node-version: '14.x'
 
+      - uses: c-hive/gha-yarn-cache@v2
+
       - name: 📥 Install yarn dependencies 📥
-        uses: bahmutov/npm-install@HEAD
-        with:
-          install-command: yarn install
+        run: yarn install --offline
 
       - name: 📥 Download server dist gzip 📥
         uses: actions/download-artifact@v2
