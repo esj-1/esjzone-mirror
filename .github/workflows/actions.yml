@@ -94,12 +94,12 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
-#        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-#      - name: 🗂 Install yarn dependencies offline 🗂
-#        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-#        run: yarn install --offline --silent
+      - name: 🗂 Install yarn dependencies offline 🗂
+        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --offline --silent
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -162,12 +162,12 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: 📥 Install yarn dependencies 📥
-#        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-#      - name: 🗂 Install yarn dependencies offline 🗂
-#        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-#        run: yarn install --offline --silent
+      - name: 🗂 Install yarn dependencies offline 🗂
+        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --offline --silent
 
       - name: 🛠 Patch files 🛠
         run: |
