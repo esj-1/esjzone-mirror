@@ -103,8 +103,8 @@ jobs:
 
       - name: 🛠 Patch files 🛠
         run: |
-          chmod +x docs/.vuepress/scripts/build.sh
-          docs/.vuepress/scripts/build.sh
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
@@ -171,8 +171,8 @@ jobs:
 
       - name: 🛠 Patch files 🛠
         run: |
-          chmod +x docs/.vuepress/scripts/build.sh
-          docs/.vuepress/scripts/build.sh
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
@@ -254,8 +254,8 @@ jobs:
 
       - name: 🛠 Patch files 🛠
         run: |
-          chmod +x docs/.vuepress/scripts/build.sh
-          docs/.vuepress/scripts/build.sh
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
       - name: ⚙ Render ⚙
         run: yarn docs:render_pages
