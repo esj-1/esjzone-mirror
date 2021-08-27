@@ -64,7 +64,6 @@ jobs:
     name: 構建 client.json
     if: ${{ github.event.inputs.skip-build == 'false' }}
     runs-on: macos-latest
-    needs: sync-esjzone
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -133,7 +132,6 @@ jobs:
     name: 構建 server.json
     if: ${{ github.event.inputs.skip-build == 'false' }}
     runs-on: macos-latest
-    needs: sync-esjzone
 
     steps:
       - name: 📥 Checkout Actions 📥
