@@ -201,7 +201,6 @@ jobs:
   render-and-deploy:
     name: 轉換頁面並部署
     runs-on: macos-latest
-    needs: [ build-client, build-server ]
 
     steps:
       - name: 📥 Checkout Actions 📥
