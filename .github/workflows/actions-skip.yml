@@ -3,10 +3,6 @@ name: 手動同步小説網頁
 on:
   workflow_dispatch:
     inputs:
-      skip-to:
-        description: '跳到某個步驟'
-        required: false
-        default: ''
       skip-build:
         description: '跳過build'
         required: true
@@ -19,7 +15,7 @@ on:
 jobs:
   sync-esjzone:
     name: 同步 ESJZone
-    if: ${{ github.event.inputs.skip-build != '' && github.event.inputs.skip-build == 'sync-esjzone' || github.event.inputs.skip-sync == 'false' }}
+    if: ${{ github.event.inputs.skip-sync == 'false' }}
     runs-on: macos-latest
 
     steps:
@@ -66,7 +62,7 @@ jobs:
 
   build-client:
     name: 構建 client.json
-    if: ${{ github.event.inputs.skip-build != '' && github.event.inputs.skip-build == 'build-client' || github.event.inputs.skip-build == 'false' }}
+    if: ${{ github.event.inputs.skip-build == 'false' }}
     runs-on: macos-latest
     needs: sync-esjzone
 
@@ -135,7 +131,7 @@ jobs:
 
   build-server:
     name: 構建 server.json
-    if: ${{ github.event.inputs.skip-build != '' && github.event.inputs.skip-build == 'build-server' || github.event.inputs.skip-build == 'false' }}
+    if: ${{ github.event.inputs.skip-build == 'false' }}
     runs-on: macos-latest
     needs: sync-esjzone
 
