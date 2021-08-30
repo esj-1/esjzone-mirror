@@ -1,3 +1,4 @@
+# _目前獲取小説漏洞已被修補, 本人正在尋找可利用的漏洞繼續進行獲取工作, 你可以到 <http://tmp.link/f/612c859ab0cf1> 下載目前的備份_
 <p align="center">
   <a href="https://esjzone.cc"><img src="https://i.loli.net/2021/08/15/UmqVR5jdZ1cOukC.png" alt="ESJZone"></a>
 </p>
