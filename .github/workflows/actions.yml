@@ -72,7 +72,7 @@ jobs:
           path: docs
 
       - name: 📂 Unzip novels 📂
-        run: tar -xzf docsnovels.gz
+        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
