@@ -42,7 +42,7 @@ jobs:
         run: venv/bin/python main.py
 
       - name: 📦 Compress novel directory 📦
-        run: tar -czf novels.gz docs/forum
+        run: tar -czf novels.gz docs
 
       - name: 📤 Upload novel gzip 📤
         uses: actions/upload-artifact@v2
@@ -69,10 +69,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: novel-gzip
-          path: docs/forum
+          path: docs
 
       - name: 📂 Unzip novels 📂
-        run: tar -xzf docs/forum/novels.gz
+        run: tar -xzf docsnovels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -137,10 +137,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: novel-gzip
-          path: docs/forum
+          path: docs
 
       - name: 📂 Unzip novels 📂
-        run: tar -xzf docs/forum/novels.gz
+        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: server_cache
@@ -243,14 +243,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: novel-gzip
-          path: docs/forum
+          path: docs
 
       - name: 📂 Unzip files 📂
         run: |
-          tar -xzf docs/forum/novels.gz
+          tar -xzf docs/novels.gz
           tar -xzf docs/.vuepress/dist/clint-dist.gz
           tar -xzf docs/.vuepress/dist/server-dist.gz
-          rm docs/forum/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
+          rm docs/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
 
       - name: 🛠 Patch files 🛠
         run: |
