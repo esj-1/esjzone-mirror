@@ -127,7 +127,7 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git fetch origin &> /dev/null
+          git pull &> /dev/null
           git add docs &> /dev/null
           git commit -m "Update dist client" -a &> /dev/null
 
@@ -221,7 +221,7 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git fetch origin &> /dev/null
+          git pull &> /dev/null
           git add docs &> /dev/null
           git commit -m "Update dist client" -a &> /dev/null
 
