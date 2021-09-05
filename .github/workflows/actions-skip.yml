@@ -205,7 +205,7 @@ jobs:
         uses: everlytic/branch-merge@1.1.2
         with:
           source_ref: actions-client
-          target_branch: actions
+          target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
           commit_message_template: "Merge client -> action"
 
@@ -213,7 +213,7 @@ jobs:
         uses: everlytic/branch-merge@1.1.2
         with:
           source_ref: actions-server
-          target_branch: actions
+          target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
           commit_message_template: "Merge server -> action"
 
@@ -221,7 +221,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions
+          ref: actions-compile
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
