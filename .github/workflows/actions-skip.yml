@@ -208,6 +208,7 @@ jobs:
         uses: esjzone/merge-branch@master
         with:
           type: now
+          repository: ${{ secrets.PRIVATE_REPO }}
           from_branch: actions-client
           target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
@@ -216,6 +217,7 @@ jobs:
         uses: esjzone/merge-branch@master
         with:
           type: now
+          repository: ${{ secrets.PRIVATE_REPO }}
           from_branch: actions-server
           target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
