@@ -200,6 +200,9 @@ jobs:
     name: 合并Repo
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_REPOSITORY: ${{ secrets.PRIVATE_REPO }}
+
     steps:
       - name: ⏩ Merge client branch ⏩
         uses: devmasx/merge-branch@1.4.0
