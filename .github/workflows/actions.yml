@@ -144,6 +144,7 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-client
+          force: true
 
 #      - name: 📦 Compress dist directory 📦
 #        run: tar -czf clint-dist.gz docs/.vuepress/dist
@@ -237,6 +238,7 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-server
+          force: true
 
   merge-branches:
     name: 合并Repo
