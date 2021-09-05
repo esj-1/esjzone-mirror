@@ -127,16 +127,15 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git pull
           git add docs &> /dev/null
-          git commit -m "Update dist client" -a
+          git commit -m "Update dist client" -a &> /dev/null
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions
+          branch: actions-client
 
 #      - name: 📦 Compress dist directory 📦
 #        run: tar -czf clint-dist.gz docs/.vuepress/dist
@@ -221,16 +220,15 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git pull
           git add docs &> /dev/null
-          git commit -m "Update dist client" -a
+          git commit -m "Update dist client" -a &> /dev/null
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions
+          branch: actions-server
 
   render-and-deploy:
     name: 轉換頁面並部署
@@ -238,6 +236,17 @@ jobs:
     needs: [ build-client, build-server ]
 
     steps:
+      - name: ⏩ Merge branches ⏩
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout actions-client
+          git merge actions
+          git checkout actions-server
+          git merge actions
+          git push origin :actions-client
+          git push origin :actions-serverd
+
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
