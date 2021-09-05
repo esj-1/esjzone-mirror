@@ -51,7 +51,8 @@ jobs:
           mv tmp-sql-data sql-data
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git add . &> /dev/null
-          git commit -m "Update SQL Database" -a &> /dev/null
+          git commit -m "Update SQL Database" -a
+          # &> /dev/null
 
       - name: 📤 Push commit changes (compile branch) 📤
         uses: ad-m/github-push-action@master
