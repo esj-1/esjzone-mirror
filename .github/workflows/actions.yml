@@ -8,7 +8,7 @@ on:
 jobs:
   sync-esjzone:
     name: 同步 ESJZone
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout repo branch 📥
