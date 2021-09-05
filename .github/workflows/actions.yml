@@ -63,17 +63,6 @@ jobs:
           branch: actions-compile
           force: true
 
-#      - name: 📦 Compress novel directory 📦
-#        run: tar -czf novels.gz docs
-#
-#      - name: 📤 Upload novel gzip 📤
-#        uses: actions/upload-artifact@v2
-#        with:
-#          if-no-files-found: error
-#          name: novel-gzip
-#          path: novels.gz
-#          retention-days: 1
-
   build-client:
     name: 構建 client
     runs-on: macos-latest
@@ -86,15 +75,6 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           ref: novels
           token: ${{ secrets.PA_TOKEN }}
-
-#      - name: 📥 Download novel gzip 📥
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: novel-gzip
-#          path: docs
-#
-#      - name: 📂 Unzip novels 📂
-#        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -146,17 +126,6 @@ jobs:
           branch: actions-client
           force: true
 
-#      - name: 📦 Compress dist directory 📦
-#        run: tar -czf clint-dist.gz docs/.vuepress/dist
-#
-#      - name: 📤 Upload dist gzip 📤
-#        uses: actions/upload-artifact@v2
-#        with:
-#          if-no-files-found: error
-#          name: client-gzip
-#          path: clint-dist.gz
-#          retention-days: 1
-
   build-server:
     name: 構建 server
     runs-on: macos-latest
@@ -169,15 +138,6 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           ref: novels
           token: ${{ secrets.PA_TOKEN }}
-
-#      - name: 📥 Download novel gzip 📥
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: novel-gzip
-#          path: docs
-#
-#      - name: 📂 Unzip novels 📂
-#        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: server_cache
@@ -213,17 +173,6 @@ jobs:
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
-
-#      - name: 📦 Compress dist directory 📦
-#        run: tar -czf server-dist.gz docs/.vuepress/dist
-#
-#      - name: 📤 Upload dist gzip 📤
-#        uses: actions/upload-artifact@v2
-#        with:
-#          if-no-files-found: error
-#          name: server-gzip
-#          path: server-dist.gz
-#          retention-days: 1
 
       - name: ✅ Commit changes ✅
         run: |
@@ -303,31 +252,6 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
         run: yarn install --offline --silent
 
-#      - name: 📥 Download server dist gzip 📥
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: server-gzip
-#          path: docs/.vuepress/dist
-#
-#      - name: 📥 Download client dist gzip 📥
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: client-gzip
-#          path: docs/.vuepress/dist
-#
-#      - name: 📥 Download novel gzip 📥
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: novel-gzip
-#          path: docs
-#
-#      - name: 📂 Unzip files 📂
-#        run: |
-#          tar -xzf docs/novels.gz
-#          tar -xzf docs/.vuepress/dist/clint-dist.gz
-#          tar -xzf docs/.vuepress/dist/server-dist.gz
-#          rm docs/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
-
       - name: 🛠 Patch files 🛠
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
@@ -336,7 +260,6 @@ jobs:
       - name: ⚙ Server Side Render ⚙
         run: yarn docs:render_pages
 
-      # Push downloaded files to production
       - name: 🚀 Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
