@@ -200,17 +200,14 @@ jobs:
     name: 合并Repo
     runs-on: ubuntu-latest
 
-    env:
-      GITHUB_REPOSITORY: ${{ secrets.PRIVATE_REPO }}
-
     steps:
       - name: ⏩ Merge client branch ⏩
         uses: esjzone/merge-branch@master
         with:
           type: now
           repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-compile
-          target_branch: actions-client
+          from_branch: actions-client
+          target_branch: actions
           github_token: ${{ secrets.PA_TOKEN }}
 
       - name: ⏩ Merge server branch ⏩
@@ -218,8 +215,8 @@ jobs:
         with:
           type: now
           repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-compile
-          target_branch: actions-server
+          from_branch: actions-server
+          target_branch: actions
           github_token: ${{ secrets.PA_TOKEN }}
 
   render-and-deploy:
