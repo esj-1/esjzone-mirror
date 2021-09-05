@@ -202,7 +202,7 @@ jobs:
 
     steps:
       - name: ⏩ Merge client branch ⏩
-        uses: devmasx/merge-branch@v1.4.0
+        uses: devmasx/merge-branch@1.4.0
         with:
           type: now
           from_branch: actions-client
@@ -210,7 +210,7 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
 
       - name: ⏩ Merge server branch ⏩
-        uses: devmasx/merge-branch@v1.4.0
+        uses: devmasx/merge-branch@1.4.0
         with:
           type: now
           from_branch: actions-server
