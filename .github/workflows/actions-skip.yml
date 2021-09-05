@@ -201,20 +201,28 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: 📥 Checkout Client Actions 📥
-        uses: actions/checkout@v2
+      - name: ⏩ Merge client branch ⏩
+        uses: devmasx/merge-branch@v1.4.0
         with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions-client
-          token: ${{ secrets.PA_TOKEN }}
+          type: now
+          from_branch: actions-client
+          target_branch: actions
+          github_token: ${{ secrets.PA_TOKEN }}
 
-      - name: 📥 Checkout Server Actions 📥
+      - name: ⏩ Merge server branch ⏩
+        uses: devmasx/merge-branch@v1.4.0
+        with:
+          type: now
+          from_branch: actions-server
+          target_branch: actions
+          github_token: ${{ secrets.PA_TOKEN }}
+
+      - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions-server
+          ref: actions
           token: ${{ secrets.PA_TOKEN }}
-          clean: false
 
       - name: ✅ Use Node.js ✅
         uses: actions/setup-node@v2
