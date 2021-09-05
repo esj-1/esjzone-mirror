@@ -344,7 +344,7 @@ jobs:
 
       - name: ⬆ Update timestamp ⬆
         run: |
-          echo date +"%s" > LAST_UPDATE
+          date +"%s" > LAST_UPDATE
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add LAST_UPDATE
