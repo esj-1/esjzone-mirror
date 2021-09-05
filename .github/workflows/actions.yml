@@ -53,6 +53,7 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions
+          force: true
 
 #      - name: 📦 Compress novel directory 📦
 #        run: tar -czf novels.gz docs
