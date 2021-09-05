@@ -202,20 +202,22 @@ jobs:
 
     steps:
       - name: ⏩ Merge client branch ⏩
-        uses: devmasx/merge-branch@1.4.0
+        uses: everlytic/branch-merge@1.1.2
         with:
           type: now
-          from_branch: actions-client
+          source_ref: actions-client
           target_branch: actions
           github_token: ${{ secrets.PA_TOKEN }}
+          commit_message_template: "Merge client -> action"
 
       - name: ⏩ Merge server branch ⏩
-        uses: devmasx/merge-branch@1.4.0
+        uses: everlytic/branch-merge@1.1.2
         with:
           type: now
-          from_branch: actions-server
+          source_ref: actions-server
           target_branch: actions
           github_token: ${{ secrets.PA_TOKEN }}
+          commit_message_template: "Merge server -> action"
 
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
