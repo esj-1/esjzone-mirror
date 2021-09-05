@@ -62,4 +62,5 @@ jobs:
         with:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.SQL_PRIVATE_REPO }}
+          directory: sql-data
           branch: master
