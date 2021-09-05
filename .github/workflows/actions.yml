@@ -241,6 +241,7 @@ jobs:
   merge-branches:
     name: 合并Repo
     runs-on: ubuntu-latest
+    needs: [ build-client, build-server ]
 
     steps:
       - name: ⏩ Merge client branch ⏩
