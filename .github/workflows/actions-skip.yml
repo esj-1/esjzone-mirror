@@ -196,27 +196,33 @@ jobs:
           path: server-dist.gz
           retention-days: 1
 
-  render-and-deploy:
-    name: 轉換頁面並部署
-    runs-on: macos-latest
+  merge-branches:
+    name: 合并Repo
+    runs-on: ubuntu-latest
 
     steps:
       - name: ⏩ Merge client branch ⏩
-        uses: everlytic/branch-merge@1.1.2
+        uses: devmasx/merge-branch@1.4.0
         with:
-          source_ref: ${{ secrets.PRIVATE_REPO }}/actions-client
-          target_branch: ${{ secrets.PRIVATE_REPO }}/actions-compile
+          type: now
+          from_branch: actions-client
+          target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
-          commit_message_template: "Merge client -> action"
 
       - name: ⏩ Merge server branch ⏩
-        uses: everlytic/branch-merge@1.1.2
+        uses: devmasx/merge-branch@1.4.0
         with:
-          source_ref: ${{ secrets.PRIVATE_REPO }}/actions-server
-          target_branch: ${{ secrets.PRIVATE_REPO }}/actions-compile
+          type: now
+          from_branch: actions-server
+          target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
-          commit_message_template: "Merge server -> action"
 
+  render-and-deploy:
+    name: 轉換頁面並部署
+    runs-on: macos-latest
+    needs: [merge-branches]
+
+    steps:
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
