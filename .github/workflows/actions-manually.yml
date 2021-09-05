@@ -7,8 +7,12 @@ on:
         description: '跳過同步'
         required: true
         default: 'false'
-      skip-build:
-        description: '跳過build'
+      skip-build-client:
+        description: '跳過client build'
+        required: true
+        default: 'false'
+      skip-build-server:
+        description: '跳過server build'
         required: true
         default: 'false'
       skip-render:
@@ -77,7 +81,7 @@ jobs:
 
   build-client:
     name: 構建 client
-    if: ${{ github.event.inputs.skip-build == 'false' }}
+    if: ${{ github.event.inputs.skip-build-client == 'false' }}
     runs-on: macos-latest
 
     steps:
@@ -140,7 +144,7 @@ jobs:
 
   build-server:
     name: 構建 server
-    if: ${{ github.event.inputs.skip-build == 'false' }}
+    if: ${{ github.event.inputs.skip-build-server == 'false' }}
     runs-on: macos-latest
 
     steps:
