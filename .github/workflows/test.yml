@@ -51,11 +51,11 @@ jobs:
           mv tmp-sql-data sql-data
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add . &> /dev/null
+          git add sql-data &> /dev/null
           git commit -m "Update SQL Database" -a
           # &> /dev/null
 
-      - name: 📤 Push commit changes (compile branch) 📤
+      - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PA_TOKEN }}
