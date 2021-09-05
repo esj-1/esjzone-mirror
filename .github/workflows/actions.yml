@@ -42,8 +42,8 @@ jobs:
 
       - name: ✅ Commit changes ✅
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com" -q
-          git config --local user.name "github-actions[bot]" -q
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add docs -q
           git commit -m "Update novel database" -a -q
 
@@ -218,8 +218,8 @@ jobs:
 
       - name: ✅ Commit changes ✅
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com" -q
-          git config --local user.name "github-actions[bot]" -q
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git fetch origin -q
           git add docs -q
           git commit -m "Update dist client" -a -q
