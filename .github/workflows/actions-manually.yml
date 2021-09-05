@@ -30,50 +30,50 @@ jobs:
           ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
           token: ${{ secrets.PA_TOKEN }}
 
-        - name: ✅ Use PyPy3 ✅
-          uses: actions/setup-python@v2
-          with:
-            python-version: 'pypy-3.7'
+      - name: ✅ Use PyPy3 ✅
+        uses: actions/setup-python@v2
+        with:
+          python-version: 'pypy-3.7'
 
-        - name: 💾 Cache Python requirements 💾
-          id: cache
-          uses: actions/cache@v2
-          with:
-            key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
-            path: venv
-            restore-keys: venv-new-cache-
+      - name: 💾 Cache Python requirements 💾
+        id: cache
+        uses: actions/cache@v2
+        with:
+          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          path: venv
+          restore-keys: venv-new-cache-
 
-        - name: 📥 Install dependencies 📥
-          if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-          run: |
-            python -m venv venv
-            venv/bin/pip install -q -r requirements.txt
+      - name: 📥 Install dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: |
+          python -m venv venv
+          venv/bin/pip install -q -r requirements.txt
 
-        - name: 🔄 Sync ESJZone 🔄
-          run: venv/bin/python main.py
+      - name: 🔄 Sync ESJZone 🔄
+        run: venv/bin/python main.py
 
-        - name: ✅ Commit changes ✅
-          run: |
-            git config --local user.email "25792361+sam01101@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add docs &> /dev/null
-            git commit -m "Update novel database" -a &> /dev/null
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update novel database" -a &> /dev/null
 
-        - name: 📤 Push commit changes 📤
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ secrets.PA_TOKEN }}
-            repository: ${{ secrets.PRIVATE_REPO }}
-            branch: novels
-            force: true
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: novels
+          force: true
 
-        - name: 📤 Push commit changes (compile branch) 📤
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ secrets.PA_TOKEN }}
-            repository: ${{ secrets.PRIVATE_REPO }}
-            branch: actions-compile
-            force: true
+      - name: 📤 Push commit changes (compile branch) 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-compile
+          force: true
 
   build-client:
     name: 構建 client
@@ -88,55 +88,55 @@ jobs:
           ref: novels
           token: ${{ secrets.PA_TOKEN }}
 
-        - name: ✅ Use Node.js ✅
-          id: client_cache
-          uses: actions/setup-node@v2
-          with:
-            node-version: '14.x'
+      - name: ✅ Use Node.js ✅
+        id: client_cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
 
-        - name: 📁  Get yarn cache directory path 📁
-          id: yarn-cache-dir-path
-          run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-        - name: 💾 Cahce yarn 💾
-          uses: actions/cache@v2
-          id: yarn-cache
-          with:
-            path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-yarn-
+      - name: 💾 Cahce yarn 💾
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-        - name: 📥 Install yarn dependencies 📥
-          if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-          run: yarn install --silent
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
 
-        - name: 🗂 Install yarn dependencies offline 🗂
-          if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-          run: yarn install --offline --silent
+      - name: 🗂 Install yarn dependencies offline 🗂
+        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --offline --silent
 
-        - name: 🛠 Patch files 🛠
-          run: |
-            chmod +x docs/.vuepress/scripts/patch.sh
-            docs/.vuepress/scripts/patch.sh
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
-        - name: ⚙ Build ⚙
-          run: yarn docs:build_client
+      - name: ⚙ Build ⚙
+        run: yarn docs:build_client
 
-        - name: ✅ Commit changes ✅
-          run: |
-            git config --local user.email "25792361+sam01101@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add docs &> /dev/null
-            git commit -m "Update dist client" -a &> /dev/null
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update dist client" -a &> /dev/null
 
-        - name: 📤 Push commit changes 📤
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ secrets.PA_TOKEN }}
-            repository: ${{ secrets.PRIVATE_REPO }}
-            branch: actions-client
-            force: true
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-client
+          force: true
 
   build-server:
     name: 構建 server
@@ -151,55 +151,55 @@ jobs:
           ref: novels
           token: ${{ secrets.PA_TOKEN }}
 
-        - name: ✅ Use Node.js ✅
-          id: server_cache
-          uses: actions/setup-node@v2
-          with:
-            node-version: '14.x'
+      - name: ✅ Use Node.js ✅
+        id: server_cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
 
-        - name: 📁  Get yarn cache directory path 📁
-          id: yarn-cache-dir-path
-          run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-        - name: 💾 Cahce yarn 💾
-          uses: actions/cache@v2
-          id: yarn-cache
-          with:
-            path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-yarn-
+      - name: 💾 Cahce yarn 💾
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-        - name: 📥 Install yarn dependencies 📥
-          if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-          run: yarn install --silent
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
 
-        - name: 🗂 Install yarn dependencies offline 🗂
-          if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-          run: yarn install --offline --silent
+      - name: 🗂 Install yarn dependencies offline 🗂
+        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --offline --silent
 
-        - name: 🛠 Patch files 🛠
-          run: |
-            chmod +x docs/.vuepress/scripts/patch.sh
-            docs/.vuepress/scripts/patch.sh
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
-        - name: ⚙ Build ⚙
-          run: yarn docs:build_server
+      - name: ⚙ Build ⚙
+        run: yarn docs:build_server
 
-        - name: ✅ Commit changes ✅
-          run: |
-            git config --local user.email "25792361+sam01101@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add docs &> /dev/null
-            git commit -m "Update dist client" -a &> /dev/null
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update dist client" -a &> /dev/null
 
-        - name: 📤 Push commit changes 📤
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ secrets.PA_TOKEN }}
-            repository: ${{ secrets.PRIVATE_REPO }}
-            branch: actions-server
-            force: true
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-server
+          force: true
 
   merge-branches:
     name: 合并Repo
@@ -238,45 +238,45 @@ jobs:
           ref: actions-compile
           token: ${{ secrets.PA_TOKEN }}
 
-        - name: ✅ Use Node.js ✅
-          uses: actions/setup-node@v2
-          with:
-            node-version: '14.x'
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
 
-        - name: 📁  Get yarn cache directory path 📁
-          id: yarn-cache-dir-path
-          run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-        - name: 💾 Cahce yarn 💾
-          uses: actions/cache@v2
-          id: yarn-cache
-          with:
-            path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-yarn-
+      - name: 💾 Cahce yarn 💾
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-        - name: 📥 Install yarn dependencies 📥
-          if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-          run: yarn install --silent
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
 
-        - name: 🗂 Install yarn dependencies offline 🗂
-          if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-          run: yarn install --offline --silent
+      - name: 🗂 Install yarn dependencies offline 🗂
+        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --offline --silent
 
-        - name: 🛠 Patch files 🛠
-          run: |
-            chmod +x docs/.vuepress/scripts/patch.sh
-            docs/.vuepress/scripts/patch.sh
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
 
-        - name: ⚙ Server Side Render ⚙
-          run: yarn docs:render_pages
+      - name: ⚙ Server Side Render ⚙
+        run: yarn docs:render_pages
 
-        - name: 🚀 Deploy 🚀
-          uses: JamesIves/github-pages-deploy-action@4.1.4
-          with:
-            branch: gh-pages
-            folder: docs/.vuepress/dist
-            token: ${{ secrets.PA_TOKEN }}
-            repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
-            silent: true
+      - name: 🚀 Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs/.vuepress/dist
+          token: ${{ secrets.PA_TOKEN }}
+          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+          silent: true
