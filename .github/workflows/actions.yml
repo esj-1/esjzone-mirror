@@ -107,6 +107,7 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
+          brew install watchman
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
@@ -170,6 +171,7 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
+          brew install watchman
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
@@ -256,6 +258,7 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
+          brew install watchman
 
       - name: ⚙ Server Side Render ⚙
         run: yarn docs:render_pages
