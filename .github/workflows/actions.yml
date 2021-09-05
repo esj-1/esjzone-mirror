@@ -44,8 +44,8 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs -q
-          git commit -m "Update novel database" -a -q
+          git add docs &> /dev/null
+          git commit -m "Update novel database" -a &> /dev/null
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -126,9 +126,9 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git fetch origin -q
-          git add docs -q
-          git commit -m "Update dist client" -a -q
+          git fetch origin &> /dev/null
+          git add docs &> /dev/null
+          git commit -m "Update dist client" -a &> /dev/null
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -220,9 +220,9 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git fetch origin -q
-          git add docs -q
-          git commit -m "Update dist client" -a -q
+          git fetch origin &> /dev/null
+          git add docs &> /dev/null
+          git commit -m "Update dist client" -a &> /dev/null
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
