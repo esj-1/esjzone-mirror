@@ -110,6 +110,7 @@ jobs:
         run: |
           mv tmp-sql-data/* sql-data
           cd sql-data
+          git config --local http.postBuffer 524288000
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add . &> /dev/null
