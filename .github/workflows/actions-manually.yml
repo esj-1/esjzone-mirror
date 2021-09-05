@@ -204,7 +204,7 @@ jobs:
   merge-branches:
     name: 合并Repo
     runs-on: ubuntu-latest
-    needs: [ build-client, build-server ]
+    if: ${{ github.event.inputs.skip-render == 'false' }}
 
     steps:
       - name: ⏩ Merge client branch ⏩
