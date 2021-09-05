@@ -238,8 +238,6 @@ jobs:
     steps:
       - name: ⏩ Merge branches ⏩
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
           git checkout actions-client
           git merge actions
           git checkout actions-server

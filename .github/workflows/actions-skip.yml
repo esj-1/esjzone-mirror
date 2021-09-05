@@ -201,11 +201,20 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: ⏩ Merge branches ⏩
+        run: |
+          git checkout actions-client
+          git merge actions
+          git checkout actions-server
+          git merge actions
+          git push origin :actions-client
+          git push origin :actions-serverd
+
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          ref: actions
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
@@ -234,37 +243,37 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
         run: yarn install --offline --silent
 
-      - name: 📥 Download server dist gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: server-gzip
-          path: docs/.vuepress/dist
-
-      - name: 📥 Download client dist gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: client-gzip
-          path: docs/.vuepress/dist
-
-      - name: 📥 Download novel gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: novel-gzip
-          path: docs/forum
-
-      - name: 📂 Unzip files 📂
-        run: |
-          tar -xzf docs/forum/novels.gz
-          tar -xzf docs/.vuepress/dist/clint-dist.gz
-          tar -xzf docs/.vuepress/dist/server-dist.gz
-          rm docs/forum/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
+#      - name: 📥 Download server dist gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: server-gzip
+#          path: docs/.vuepress/dist
+#
+#      - name: 📥 Download client dist gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: client-gzip
+#          path: docs/.vuepress/dist
+#
+#      - name: 📥 Download novel gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: novel-gzip
+#          path: docs
+#
+#      - name: 📂 Unzip files 📂
+#        run: |
+#          tar -xzf docs/novels.gz
+#          tar -xzf docs/.vuepress/dist/clint-dist.gz
+#          tar -xzf docs/.vuepress/dist/server-dist.gz
+#          rm docs/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
 
       - name: 🛠 Patch files 🛠
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
 
-      - name: ⚙ Render ⚙
+      - name: ⚙ Server Side Render ⚙
         run: yarn docs:render_pages
 
       # Push downloaded files to production
