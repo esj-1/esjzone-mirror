@@ -214,6 +214,7 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           ref: actions-server
           token: ${{ secrets.PA_TOKEN }}
+          clean: false
 
       - name: ✅ Use Node.js ✅
         uses: actions/setup-node@v2
