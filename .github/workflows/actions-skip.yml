@@ -204,16 +204,16 @@ jobs:
       - name: ⏩ Merge client branch ⏩
         uses: everlytic/branch-merge@1.1.2
         with:
-          source_ref: actions-client
-          target_branch: actions-compile
+          source_ref: ${{ secrets.PRIVATE_REPO }}/actions-client
+          target_branch: ${{ secrets.PRIVATE_REPO }}/actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
           commit_message_template: "Merge client -> action"
 
       - name: ⏩ Merge server branch ⏩
         uses: everlytic/branch-merge@1.1.2
         with:
-          source_ref: actions-server
-          target_branch: actions-compile
+          source_ref: ${{ secrets.PRIVATE_REPO }}/actions-server
+          target_branch: ${{ secrets.PRIVATE_REPO }}/actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
           commit_message_template: "Merge server -> action"
 
