@@ -232,7 +232,7 @@ jobs:
   render-and-deploy:
     name: 轉換頁面並部署
     runs-on: macos-latest
-    needs: [merge-branches]
+    needs: merge-branches
 
     steps:
       - name: 📥 Checkout Actions 📥

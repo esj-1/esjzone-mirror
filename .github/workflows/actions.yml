@@ -63,6 +63,67 @@ jobs:
           branch: actions-compile
           force: true
 
+  sync-sql:
+    name: 同步 SQL
+    runs-on: ubuntu-latest
+    needs: sync-esjzone
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+          path: esj
+
+      - name: ✅ Use PyPy3 ✅
+        uses: actions/setup-python@v2
+        with:
+          python-version: 'pypy-3.7'
+
+      - name: 💾 Cache Python requirements 💾
+        id: cache
+        uses: actions/cache@v2
+        with:
+          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          path: venv
+          restore-keys: venv-new-cache-
+
+      - name: 📥 Install dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: |
+          python -m venv venv
+          venv/bin/pip install -q -r requirements.txt
+
+      - name: 🔄 Get SQL Data 🔄
+        run: venv/bin/python esj/fetch-sql.py
+
+      - name: 📥 Checkout sql branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.SQL_PRIVATE_REPO }}
+          ref: master
+          token: ${{ secrets.PA_TOKEN }}
+          path: sql-data
+
+      - name: ✅ Commit changes ✅
+        run: |
+          mv tmp-sql-data/* sql-data
+          cd sql-data
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add . &> /dev/null
+          git commit -m "Update SQL Database" -a &> /dev/null
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.SQL_PRIVATE_REPO }}
+          directory: sql-data
+          branch: master
+
   build-client:
     name: 構建 client
     runs-on: macos-latest
