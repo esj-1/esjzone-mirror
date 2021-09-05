@@ -42,10 +42,10 @@ jobs:
 
       - name: ✅ Commit changes ✅
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs
-          git commit -m "Update novel database" -a
+          git config --local user.email "25792361+sam01101@users.noreply.github.com" -q
+          git config --local user.name "github-actions[bot]" -q
+          git add docs -q
+          git commit -m "Update novel database" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -53,7 +53,6 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions
-          force: true
 
 #      - name: 📦 Compress novel directory 📦
 #        run: tar -czf novels.gz docs
@@ -127,8 +126,9 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs
-          git commit -m "Update dist client" -a
+          git fetch origin -q
+          git add docs -q
+          git commit -m "Update dist client" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -218,10 +218,11 @@ jobs:
 
       - name: ✅ Commit changes ✅
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs
-          git commit -m "Update dist client" -a
+          git config --local user.email "25792361+sam01101@users.noreply.github.com" -q
+          git config --local user.name "github-actions[bot]" -q
+          git fetch origin -q
+          git add docs -q
+          git commit -m "Update dist client" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
