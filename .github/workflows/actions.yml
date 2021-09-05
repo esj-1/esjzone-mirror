@@ -339,12 +339,14 @@ jobs:
     steps:
       - name: 📥 Checkout 📥
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PA_TOKEN }}
 
       - name: ⬆ Update timestamp ⬆
         run: |
           echo date +"%s" > LAST_UPDATE
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add LAST_UPDATE
           git commit -m "Update timestamp"
           git push
