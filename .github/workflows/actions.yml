@@ -32,7 +32,7 @@ jobs:
           restore-keys: venv-new-cache-
 
       - name: 📥 Install dependencies 📥
-#        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
           python -m venv venv
           venv/bin/pip install -q -r requirements.txt
