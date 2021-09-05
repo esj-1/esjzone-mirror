@@ -3,7 +3,7 @@ name: 同步小説網頁
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '55 15 * * *'
 
 jobs:
   sync-esjzone:
