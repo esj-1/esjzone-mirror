@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: 📥 Checkout Actions 📥
+      - name: 📥 Checkout repo branch 📥
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
@@ -37,23 +37,35 @@ jobs:
           python -m venv venv
           venv/bin/pip install -q -r requirements.txt
 
-      # Get list from backup server, generate fake fetch message & delay
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python main.py
 
-      - name: 📦 Compress novel directory 📦
-        run: tar -czf novels.gz docs
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update novel database" -a
 
-      - name: 📤 Upload novel gzip 📤
-        uses: actions/upload-artifact@v2
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
         with:
-          if-no-files-found: error
-          name: novel-gzip
-          path: novels.gz
-          retention-days: 1
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions
+
+#      - name: 📦 Compress novel directory 📦
+#        run: tar -czf novels.gz docs
+#
+#      - name: 📤 Upload novel gzip 📤
+#        uses: actions/upload-artifact@v2
+#        with:
+#          if-no-files-found: error
+#          name: novel-gzip
+#          path: novels.gz
+#          retention-days: 1
 
   build-client:
-    name: 構建 client.json
+    name: 構建 client
     runs-on: macos-latest
     needs: sync-esjzone
 
@@ -62,17 +74,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          ref: actions
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: 📥 Download novel gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: novel-gzip
-          path: docs
-
-      - name: 📂 Unzip novels 📂
-        run: tar -xzf docs/novels.gz
+#      - name: 📥 Download novel gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: novel-gzip
+#          path: docs
+#
+#      - name: 📂 Unzip novels 📂
+#        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: client_cache
@@ -109,19 +121,32 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
 
-      - name: 📦 Compress dist directory 📦
-        run: tar -czf clint-dist.gz docs/.vuepress/dist
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update dist client" -a
 
-      - name: 📤 Upload dist gzip 📤
-        uses: actions/upload-artifact@v2
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
         with:
-          if-no-files-found: error
-          name: client-gzip
-          path: clint-dist.gz
-          retention-days: 1
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions
+
+#      - name: 📦 Compress dist directory 📦
+#        run: tar -czf clint-dist.gz docs/.vuepress/dist
+#
+#      - name: 📤 Upload dist gzip 📤
+#        uses: actions/upload-artifact@v2
+#        with:
+#          if-no-files-found: error
+#          name: client-gzip
+#          path: clint-dist.gz
+#          retention-days: 1
 
   build-server:
-    name: 構建 server.json
+    name: 構建 server
     runs-on: macos-latest
     needs: sync-esjzone
 
@@ -130,17 +155,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          ref: actions
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: 📥 Download novel gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: novel-gzip
-          path: docs
-
-      - name: 📂 Unzip novels 📂
-        run: tar -xzf docs/novels.gz
+#      - name: 📥 Download novel gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: novel-gzip
+#          path: docs
+#
+#      - name: 📂 Unzip novels 📂
+#        run: tar -xzf docs/novels.gz
 
       - name: ✅ Use Node.js ✅
         id: server_cache
@@ -177,16 +202,29 @@ jobs:
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
 
-      - name: 📦 Compress dist directory 📦
-        run: tar -czf server-dist.gz docs/.vuepress/dist
+#      - name: 📦 Compress dist directory 📦
+#        run: tar -czf server-dist.gz docs/.vuepress/dist
+#
+#      - name: 📤 Upload dist gzip 📤
+#        uses: actions/upload-artifact@v2
+#        with:
+#          if-no-files-found: error
+#          name: server-gzip
+#          path: server-dist.gz
+#          retention-days: 1
 
-      - name: 📤 Upload dist gzip 📤
-        uses: actions/upload-artifact@v2
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update dist client" -a
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
         with:
-          if-no-files-found: error
-          name: server-gzip
-          path: server-dist.gz
-          retention-days: 1
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions
 
   render-and-deploy:
     name: 轉換頁面並部署
@@ -198,7 +236,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          ref: actions
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
@@ -227,37 +265,37 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
         run: yarn install --offline --silent
 
-      - name: 📥 Download server dist gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: server-gzip
-          path: docs/.vuepress/dist
-
-      - name: 📥 Download client dist gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: client-gzip
-          path: docs/.vuepress/dist
-
-      - name: 📥 Download novel gzip 📥
-        uses: actions/download-artifact@v2
-        with:
-          name: novel-gzip
-          path: docs
-
-      - name: 📂 Unzip files 📂
-        run: |
-          tar -xzf docs/novels.gz
-          tar -xzf docs/.vuepress/dist/clint-dist.gz
-          tar -xzf docs/.vuepress/dist/server-dist.gz
-          rm docs/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
+#      - name: 📥 Download server dist gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: server-gzip
+#          path: docs/.vuepress/dist
+#
+#      - name: 📥 Download client dist gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: client-gzip
+#          path: docs/.vuepress/dist
+#
+#      - name: 📥 Download novel gzip 📥
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: novel-gzip
+#          path: docs
+#
+#      - name: 📂 Unzip files 📂
+#        run: |
+#          tar -xzf docs/novels.gz
+#          tar -xzf docs/.vuepress/dist/clint-dist.gz
+#          tar -xzf docs/.vuepress/dist/server-dist.gz
+#          rm docs/novels.gz docs/.vuepress/dist/clint-dist.gz docs/.vuepress/dist/server-dist.gz
 
       - name: 🛠 Patch files 🛠
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
 
-      - name: ⚙ Render ⚙
+      - name: ⚙ Server Side Render ⚙
         run: yarn docs:render_pages
 
       # Push downloaded files to production
