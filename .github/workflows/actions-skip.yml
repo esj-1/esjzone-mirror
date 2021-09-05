@@ -201,20 +201,18 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: ⏩ Merge branches ⏩
-        run: |
-          git checkout actions-client
-          git merge actions
-          git checkout actions-server
-          git merge actions
-          git push origin :actions-client
-          git push origin :actions-serverd
-
-      - name: 📥 Checkout Actions 📥
+      - name: 📥 Checkout Client Actions 📥
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions
+          ref: actions-client
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: 📥 Checkout Server Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-server
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
