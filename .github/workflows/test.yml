@@ -15,6 +15,7 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
           token: ${{ secrets.PA_TOKEN }}
+          path: esj
 
       - name: ✅ Use PyPy3 ✅
         uses: actions/setup-python@v2
@@ -25,18 +26,18 @@ jobs:
         id: cache
         uses: actions/cache@v2
         with:
-          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          key: venv-new-cache-${{ hashFiles('esj/requirements.txt') }}
           path: venv
           restore-keys: venv-new-cache-
 
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
-          python -m venv venv
-          venv/bin/pip install -q -r requirements.txt
+          python -m venv esj/venv
+          esj/venv/bin/pip install -q -r requirements.txt
 
       - name: 🔄 Get SQL Data 🔄
-        run: venv/bin/python fetch-sql.py
+        run: esj/venv/bin/python fetch-sql.py
 
       - name: 📥 Checkout sql branch 📥
         uses: actions/checkout@v2
@@ -48,10 +49,10 @@ jobs:
 
       - name: ✅ Commit changes ✅
         run: |
-          mv tmp-sql-data/* sql-data
+          mv esj/tmp-sql-data/* sql-data
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add sql-data/*
+          git add sql-data
           git commit -m "Update SQL Database" -a
           # &> /dev/null
 
