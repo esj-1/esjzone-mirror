@@ -26,18 +26,18 @@ jobs:
         id: cache
         uses: actions/cache@v2
         with:
-          key: venv-new-cache-${{ hashFiles('esj/requirements.txt') }}
+          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
           path: venv
           restore-keys: venv-new-cache-
 
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
-          python -m venv esj/venv
-          esj/venv/bin/pip install -q -r requirements.txt
+          python -m venv venv
+          venv/bin/pip install -q -r requirements.txt
 
       - name: 🔄 Get SQL Data 🔄
-        run: esj/venv/bin/python fetch-sql.py
+        run: venv/bin/python fetch-sql.py
 
       - name: 📥 Checkout sql branch 📥
         uses: actions/checkout@v2
