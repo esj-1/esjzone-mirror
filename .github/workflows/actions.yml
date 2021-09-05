@@ -335,7 +335,6 @@ jobs:
   update-timestamp:
     name: 更新最後更新時間
     runs-on: ubuntu-latest
-    needs: sync-sql
 
     steps:
       - name: 📥 Checkout 📥
