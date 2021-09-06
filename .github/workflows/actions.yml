@@ -265,8 +265,8 @@ jobs:
 
       - name: ⏩ Merge 2 branches ⏩
         run: |
-          git checkout actions-client
-          git checkout actions-server
+          git fetch actions-client && git checkout actions-client
+          git fetch actions-server && git checkout actions-server
           git checkout actions-compile
           git merge actions-client actions-server
           git push origin --delete novels actions-client actions-server
@@ -370,7 +370,7 @@ jobs:
       - name: ⏩ Merge branches ⏩
         run: |
           branches=""
-          for i in {0..39}; do branches="${branches} actions-compile-$i"; git checkout actions-compile-$i; done
+          for i in {0..39}; do branches="${branches} actions-compile-$i"; git fetch actions-compile-$i; git checkout actions-compile-$i; done
           git checkout actions-compile
           git merge ${branches}
           git push origin --delete ${branches}
