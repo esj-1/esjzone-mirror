@@ -152,9 +152,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarnc-
+            ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
@@ -215,9 +215,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarnc-
+            ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
@@ -322,9 +322,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarnc-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarnc-
+            ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
