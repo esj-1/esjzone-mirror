@@ -168,7 +168,6 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
-          brew install watchman
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_client
@@ -232,7 +231,6 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
-          brew install watchman
 
       - name: ⚙ Build ⚙
         run: yarn docs:build_server
@@ -281,6 +279,10 @@ jobs:
     runs-on: macos-latest
     needs: [ build-client, build-server, merge-branches ]
 
+    strategy:
+      matrix:
+        worker-number: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+
     steps:
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
@@ -319,10 +321,9 @@ jobs:
         run: |
           chmod +x docs/.vuepress/scripts/patch.sh
           docs/.vuepress/scripts/patch.sh
-          brew install watchman
 
       - name: ⚙ Server Side Render ⚙
-        run: yarn docs:render_pages
+        run: yarn docs:render_pages 40 ${{ matrix.worker-number }}
 
       - name: 🚀 Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
