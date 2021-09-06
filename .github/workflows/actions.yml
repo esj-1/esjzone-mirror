@@ -355,6 +355,7 @@ jobs:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-compile-${{ matrix.worker-number }}
+          force: true
 
   merge-all:
     name: 合并全部頁面
