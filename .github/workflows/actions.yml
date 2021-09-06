@@ -293,7 +293,7 @@ jobs:
 
   render-pages:
     name: 頁面渲染
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: [ build-client, build-server, merge-branches ]
 
     strategy:
