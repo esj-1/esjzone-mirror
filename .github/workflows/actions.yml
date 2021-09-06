@@ -2,10 +2,11 @@ name: 同步小説網頁
 
 on:
   workflow_dispatch:
-    skip-sync:
-      description: '跳過同步'
-      required: true
-      default: 'false'
+    inputs:
+      skip-sync:
+        description: '跳過同步'
+        required: true
+        default: 'false'
   schedule:
     - cron: '55 15 * * *'
 
