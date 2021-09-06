@@ -382,6 +382,7 @@ jobs:
 
   update-timestamp:
     name: 更新最後更新時間
+    needs: merge-all
     if: ${{ always() }}
     runs-on: ubuntu-latest
 
