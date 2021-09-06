@@ -2,18 +2,12 @@ name: 同步小説網頁
 
 on:
   workflow_dispatch:
-    inputs:
-      skip-sync:
-        description: '跳過同步'
-        required: true
-        default: 'false'
   schedule:
     - cron: '55 15 * * *'
 
 jobs:
   sync-esjzone:
     name: 同步 ESJZone
-    if: ${{ github.event.schedule.cron }}
     runs-on: ubuntu-latest
 
     steps:
