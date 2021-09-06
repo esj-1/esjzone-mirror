@@ -266,6 +266,7 @@ jobs:
       - name: ⏩ Merge 2 branches ⏩
         run: |
           git merge actions-client actions-server
+          git push origin --delete novels actions-client actions-server
 
 #      - name: ⏩ Merge client branch ⏩
 #        uses: esjzone/merge-branch@master
