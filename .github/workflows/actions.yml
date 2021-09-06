@@ -276,7 +276,7 @@ jobs:
 
   render-and-deploy:
     name: 轉換頁面並部署
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: [ build-client, build-server, merge-branches ]
 
     strategy:
