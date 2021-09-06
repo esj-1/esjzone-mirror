@@ -45,7 +45,7 @@ jobs:
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add docs &> /dev/null
-          git commit -m "Update novel database" -a &> /dev/null
+          git commit -m "Update novel database" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -177,7 +177,7 @@ jobs:
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add docs &> /dev/null
-          git commit -m "Update dist client" -a &> /dev/null
+          git commit -m "Update dist client" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -240,7 +240,7 @@ jobs:
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add docs &> /dev/null
-          git commit -m "Update dist client" -a &> /dev/null
+          git commit -m "Update dist client" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
@@ -324,6 +324,20 @@ jobs:
 
       - name: ⚙ Server Side Render ⚙
         run: yarn docs:render_pages 40 ${{ matrix.worker-number }}
+
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/.vuepress/dist &> /dev/null
+          git commit -m "Update dist from worker ${{ matrix.worker-number }}" -a -q
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-server
 
       - name: 🚀 Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
