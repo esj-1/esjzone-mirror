@@ -263,31 +263,29 @@ jobs:
           ref: actions-compile
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: ⏩ Merge 2 branches ⏩
-        run: |
-          git fetch actions-client && git checkout actions-client
-          git fetch actions-server && git checkout actions-server
-          git checkout actions-compile
-          git merge actions-client actions-server
-          git push origin --delete novels actions-client actions-server
+      - name: ⏩ Merge client branch ⏩
+        uses: esjzone/merge-branch@master
+        with:
+          type: now
+          repository: ${{ secrets.PRIVATE_REPO }}
+          from_branch: actions-client
+          target_branch: actions-compile
+          github_token: ${{ secrets.PA_TOKEN }}
 
-#      - name: ⏩ Merge client branch ⏩
-#        uses: esjzone/merge-branch@master
-#        with:
-#          type: now
-#          repository: ${{ secrets.PRIVATE_REPO }}
-#          from_branch: actions-client
-#          target_branch: actions-compile
-#          github_token: ${{ secrets.PA_TOKEN }}
-#
-#      - name: ⏩ Merge server branch ⏩
-#        uses: esjzone/merge-branch@master
-#        with:
-#          type: now
-#          repository: ${{ secrets.PRIVATE_REPO }}
-#          from_branch: actions-server
-#          target_branch: actions-compile
-#          github_token: ${{ secrets.PA_TOKEN }}
+      - name: ⏩ Merge server branch ⏩
+        uses: esjzone/merge-branch@master
+        with:
+          type: now
+          repository: ${{ secrets.PRIVATE_REPO }}
+          from_branch: actions-server
+          target_branch: actions-compile
+          github_token: ${{ secrets.PA_TOKEN }}
+
+#      - name: 🧹 Clean Up 🧹
+#        run: |
+#          for i in {0..39}; do branches="${branches} done
+#          git push origin --delete ${branches}
+#          git push origin --delete novels actions-client actions-server
 
   render-pages:
     name: 頁面渲染
@@ -296,7 +294,7 @@ jobs:
 
     strategy:
       matrix:
-        worker-number: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+        worker-number: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 ]
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -359,7 +357,29 @@ jobs:
     needs: render-pages
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        worker-number: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 ]
+
+
     steps:
+      - name: ⏩ Merge server branch ⏩
+        uses: esjzone/merge-branch@master
+        with:
+          type: now
+          repository: ${{ secrets.PRIVATE_REPO }}
+          from_branch: actions-compile-${{ matrix.worker-number }}
+          target_branch: actions-compile
+          github_token: ${{ secrets.PA_TOKEN }}
+
+#      - name: ⏩ Merge branches ⏩
+#        run: |
+#          branches=""
+#          for i in {0..39}; do branches="${branches} actions-compile-$i"; git fetch actions-compile-$i; git checkout actions-compile-$i; done
+#          git checkout actions-compile
+#          git merge ${branches}
+#          git push origin --delete ${branches}
+
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
@@ -367,22 +387,14 @@ jobs:
           ref: actions-compile
           token: ${{ secrets.PA_TOKEN }}
 
-      - name: ⏩ Merge branches ⏩
-        run: |
-          branches=""
-          for i in {0..39}; do branches="${branches} actions-compile-$i"; git fetch actions-compile-$i; git checkout actions-compile-$i; done
-          git checkout actions-compile
-          git merge ${branches}
-          git push origin --delete ${branches}
-
-#      - name: 🚀 Deploy 🚀
-#      uses: JamesIves/github-pages-deploy-action@4.1.4
-#      with:
-#        branch: gh-pages
-#        folder: docs/.vuepress/dist
-#        token: ${{ secrets.PA_TOKEN }}
-#        repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
-#        silent: true
+      - name: 🚀 Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs/.vuepress/dist
+          token: ${{ secrets.PA_TOKEN }}
+          repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+          silent: true
 
   update-timestamp:
     name: 更新最後更新時間
