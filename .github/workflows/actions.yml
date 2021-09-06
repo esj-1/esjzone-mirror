@@ -2,12 +2,17 @@ name: 同步小説網頁
 
 on:
   workflow_dispatch:
+    skip-sync:
+      description: '跳過同步'
+      required: true
+      default: 'false'
   schedule:
     - cron: '55 15 * * *'
 
 jobs:
   sync-esjzone:
     name: 同步 ESJZone
+    if: ${{ github.event.schedule.cron }}
     runs-on: ubuntu-latest
 
     steps:
@@ -256,23 +261,34 @@ jobs:
     needs: [ build-client, build-server ]
 
     steps:
-      - name: ⏩ Merge client branch ⏩
-        uses: esjzone/merge-branch@master
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
         with:
-          type: now
           repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-client
-          target_branch: actions-compile
-          github_token: ${{ secrets.PA_TOKEN }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
 
-      - name: ⏩ Merge server branch ⏩
-        uses: esjzone/merge-branch@master
-        with:
-          type: now
-          repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-server
-          target_branch: actions-compile
-          github_token: ${{ secrets.PA_TOKEN }}
+      - name: ⏩ Merge 2 branches ⏩
+        run: |
+          git merge actions-client actions-server
+
+#      - name: ⏩ Merge client branch ⏩
+#        uses: esjzone/merge-branch@master
+#        with:
+#          type: now
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          from_branch: actions-client
+#          target_branch: actions-compile
+#          github_token: ${{ secrets.PA_TOKEN }}
+#
+#      - name: ⏩ Merge server branch ⏩
+#        uses: esjzone/merge-branch@master
+#        with:
+#          type: now
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          from_branch: actions-server
+#          target_branch: actions-compile
+#          github_token: ${{ secrets.PA_TOKEN }}
 
   render-and-deploy:
     name: 轉換頁面並部署
