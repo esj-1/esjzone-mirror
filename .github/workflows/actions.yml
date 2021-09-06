@@ -255,31 +255,35 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ build-client, build-server ]
 
+    strategy:
+      matrix:
+        branch: [client, server]
+
     steps:
-      - name: 📥 Checkout Actions 📥
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions-compile
-          token: ${{ secrets.PA_TOKEN }}
+#      - name: 📥 Checkout Actions 📥
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          ref: actions-compile
+#          token: ${{ secrets.PA_TOKEN }}
 
-      - name: ⏩ Merge client branch ⏩
+      - name: ⏩ Merge ${{ matrix.branch }} branch ⏩
         uses: esjzone/merge-branch@master
         with:
           type: now
           repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-client
+          from_branch: actions-${{ matrix.branch }}
           target_branch: actions-compile
           github_token: ${{ secrets.PA_TOKEN }}
 
-      - name: ⏩ Merge server branch ⏩
-        uses: esjzone/merge-branch@master
-        with:
-          type: now
-          repository: ${{ secrets.PRIVATE_REPO }}
-          from_branch: actions-server
-          target_branch: actions-compile
-          github_token: ${{ secrets.PA_TOKEN }}
+#      - name: ⏩ Merge server branch ⏩
+#        uses: esjzone/merge-branch@master
+#        with:
+#          type: now
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          from_branch: actions-server
+#          target_branch: actions-compile
+#          github_token: ${{ secrets.PA_TOKEN }}
 
 #      - name: 🧹 Clean Up 🧹
 #        run: |
@@ -353,7 +357,7 @@ jobs:
           branch: actions-compile-${{ matrix.worker-number }}
 
   merge-all:
-    name: 合并全部頁面並部署
+    name: 合并全部頁面
     needs: render-pages
     runs-on: ubuntu-latest
 
@@ -363,7 +367,7 @@ jobs:
 
 
     steps:
-      - name: ⏩ Merge server branch ⏩
+      - name: ⏩ Merge compile branch ${{ matrix.worker-number }} ⏩
         uses: esjzone/merge-branch@master
         with:
           type: now
@@ -380,6 +384,12 @@ jobs:
 #          git merge ${branches}
 #          git push origin --delete ${branches}
 
+  deploy:
+    name: 部署
+    runs-on: ubuntu-latest
+    needs: merge-all
+
+    steps:
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
         with:
