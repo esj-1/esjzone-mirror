@@ -20,8 +20,8 @@ jobs:
         run: |
           git fetch origin actions-client --depth=1
           git checkout actions-compile
-          git merge actions-client
+          git merge origin/actions-client
           git fetch origin actions-server --depth=1
           git checkout actions-compile
-          git merge actions-server
+          git merge origin/actions-server
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
