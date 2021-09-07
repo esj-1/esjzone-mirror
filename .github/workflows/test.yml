@@ -18,5 +18,6 @@ jobs:
 
       - name: Setup
         run: |
-          pwd
-          git push origin --delete novels
+          branches=""
+          for i in {0..39}; do branches="${branches} actions-compile-$i"; done
+          git push origin --delete ${branches}
