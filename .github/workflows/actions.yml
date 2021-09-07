@@ -199,12 +199,12 @@ jobs:
 #        branch: [ client, server ]
 
     steps:
-      #      - name: 📥 Checkout Actions 📥
-      #        uses: actions/checkout@v2
-      #        with:
-      #          repository: ${{ secrets.PRIVATE_REPO }}
-      #          ref: actions-compile
-      #          token: ${{ secrets.PA_TOKEN }}
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
 
       - name: ⏩ Merge branches ⏩
         run: |
@@ -312,6 +312,12 @@ jobs:
 #          from_branch: actions-compile-${{ matrix.worker-number }}
 #          target_branch: actions-compile
 #          github_token: ${{ secrets.PA_TOKEN }}
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
 
       - name: ⏩ Merge branches ⏩
         run: |
