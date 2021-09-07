@@ -27,9 +27,9 @@ jobs:
         id: cache
         uses: esjzone/cache@main
         with:
-          key: venv-cache-${{ hashFiles('**/requirements.txt') }}
+          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
           path: venv
-          restore-keys: venv-cache-
+          restore-keys: venv-new-cache-
 
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
