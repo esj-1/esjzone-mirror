@@ -18,6 +18,8 @@ jobs:
 
       - name: Setup
         run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git fetch --all --depth=1
           git merge origin/actions-client origin/actions-server --allow-unrelated-histories
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
