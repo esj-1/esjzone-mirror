@@ -18,6 +18,8 @@ jobs:
 
       - name: Setup
         run: |
-          git merge ${{ secrets.PRIVATE_REPO }}/actions-client
-          git merge ${{ secrets.PRIVATE_REPO }}/actions-server
+          git fetch origin actions-client --depth=1
+          git fetch origin actions-server --depth=1
+          git merge actions-client
+          git merge actions-server
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
