@@ -18,6 +18,6 @@ jobs:
 
       - name: Setup
         run: |
-          git fetch --multiple origin actions-client actions-server --depth=1
+          git fetch --multiple origin/actions-client origin/actions-server --depth=1
           git merge origin/actions-client origin/actions-server --allow-unrelated-histories
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
