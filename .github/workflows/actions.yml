@@ -25,11 +25,11 @@ jobs:
 
       - name: 💾 Cache Python requirements 💾
         id: cache
-        uses: actions/cache@v2
+        uses: esjzone/cache@main
         with:
-          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          key: venv-cache-${{ hashFiles('**/requirements.txt') }}
           path: venv
-          restore-keys: venv-new-cache-
+          restore-keys: venv-cache-
 
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -67,6 +67,8 @@ jobs:
     name: 構建 client
     runs-on: macos-latest
     needs: sync-esjzone
+    env:
+      CACHE_SKIP_SAVE: true
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -87,7 +89,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: 💾 Cahce yarn 💾
-        uses: actions/cache@v2
+        uses: esjzone/cache@main
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -194,10 +196,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ build-client, build-server ]
 
-#    strategy:
-#      matrix:
-#        branch: [ client, server ]
-
     steps:
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
@@ -214,15 +212,6 @@ jobs:
           git merge origin/actions-client origin/actions-server
           git push
 
-      #      - name: ⏩ Merge server branch ⏩
-      #        uses: esjzone/merge-branch@master
-      #        with:
-      #          type: now
-      #          repository: ${{ secrets.PRIVATE_REPO }}
-      #          from_branch: actions-server
-      #          target_branch: actions-compile
-      #          github_token: ${{ secrets.PA_TOKEN }}
-
       - name: 🧹 Clean Up 🧹
         run: |
           git push origin --delete novels actions-client actions-server
@@ -231,6 +220,8 @@ jobs:
     name: 頁面渲染
     runs-on: ubuntu-latest
     needs: [ build-client, build-server, merge-branches ]
+    env:
+      CACHE_SKIP_SAVE: true
 
     strategy:
       matrix:
@@ -254,7 +245,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: 💾 Cahce yarn 💾
-        uses: actions/cache@v2
+        uses: esjzone/cache@main
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -298,20 +289,7 @@ jobs:
     needs: render-pages
     runs-on: ubuntu-latest
 
-#    strategy:
-#      matrix:
-#        worker-number: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
-
-
     steps:
-#      - name: ⏩ Merge compile branch ${{ matrix.worker-number }} ⏩
-#        uses: esjzone/merge-branch@master
-#        with:
-#          type: now
-#          repository: ${{ secrets.PRIVATE_REPO }}
-#          from_branch: actions-compile-${{ matrix.worker-number }}
-#          target_branch: actions-compile
-#          github_token: ${{ secrets.PA_TOKEN }}
       - name: 📥 Checkout repo branch 📥
         uses: actions/checkout@v2
         with:
@@ -324,7 +302,7 @@ jobs:
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git fetch --all --depth=1
-          for i in {0..19}; do git merge actions-compile-$i; done
+          for i in {0..19}; do git merge origin/actions-compile-$i; done
           for i in {0..19}; do git push origin :actions-compile-$i || true; done
           git push
 
