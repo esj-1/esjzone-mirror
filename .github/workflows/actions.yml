@@ -340,7 +340,7 @@ jobs:
           docs/.vuepress/scripts/patch.sh
 
       - name: ⚙ Server Side Render ⚙
-        run: yarn docs:render_pages 40 ${{ matrix.worker-number }}
+        run: yarn docs:render_pages 80 ${{ matrix.worker-number }}
 
       - name: ✅ Commit changes ✅
         run: |
