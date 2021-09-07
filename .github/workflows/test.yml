@@ -18,4 +18,4 @@ jobs:
 
       - name: Setup
         run: |
-          for i in {0..39}; do git push origin :actions-compile-$i; done
+          for i in {0..39}; do git push origin :actions-compile-$i || true; done
