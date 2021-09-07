@@ -63,10 +63,55 @@ jobs:
           branch: actions-compile
           force: true
 
+  build-node-cache:
+    name: 構建 node_modules
+    runs-on: macos-latest
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: 💾 Cahce yarn 💾
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: 💾 Cahce node 💾
+        uses: actions/cache@v2
+        id: node-cache
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
+
   build-client:
     name: 構建 client
     runs-on: macos-latest
-    needs: sync-esjzone
+    needs: [sync-esjzone, build-node-cache]
     env:
       CACHE_SKIP_SAVE: true
 
@@ -79,31 +124,20 @@ jobs:
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
-        id: client_cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
 
-      - name: 📁  Get yarn cache directory path 📁
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cahce yarn 💾
-        uses: esjzone/cache@main
-        id: yarn-cache
+      - name: 💾 Cahce node 💾
+        uses: actions/cache@v2
+        id: node-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install --silent
-
-      - name: 🗂 Install yarn dependencies offline 🗂
-        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-        run: yarn install --offline --silent
+            ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -131,7 +165,9 @@ jobs:
   build-server:
     name: 構建 server
     runs-on: macos-latest
-    needs: sync-esjzone
+    needs: [sync-esjzone, build-node-cache]
+    env:
+      CACHE_SKIP_SAVE: true
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -142,31 +178,20 @@ jobs:
           token: ${{ secrets.PA_TOKEN }}
 
       - name: ✅ Use Node.js ✅
-        id: server_cache
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
 
-      - name: 📁  Get yarn cache directory path 📁
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cahce yarn 💾
+      - name: 💾 Cahce node 💾
         uses: actions/cache@v2
-        id: yarn-cache
+        id: node-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install --silent
-
-      - name: 🗂 Install yarn dependencies offline 🗂
-        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-        run: yarn install --offline --silent
+            ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -240,26 +265,16 @@ jobs:
         with:
           node-version: '14.x'
 
-      - name: 📁  Get yarn cache directory path 📁
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: 💾 Cahce yarn 💾
-        uses: esjzone/cache@main
-        id: yarn-cache
+      - name: 💾 Cahce node 💾
+        uses: actions/cache@v2
+        id: node-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: 📥 Install yarn dependencies 📥
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        run: yarn install --silent
-
-      - name: 🗂 Install yarn dependencies offline 🗂
-        if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
-        run: yarn install --offline --silent
+            ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -304,7 +319,7 @@ jobs:
           git fetch --all --depth=1
           for i in {0..19}; do git merge origin/actions-compile-$i --allow-unrelated-histories; done
           for i in {0..19}; do git push origin :actions-compile-$i || true; done
-          git push
+          git push -f
 
   deploy:
     name: 部署
