@@ -97,8 +97,7 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          restore-keys: ${{ runner.os }}-yarn-
 
       - name: 💾 Cahce node 💾
         uses: actions/cache@v2
@@ -108,8 +107,7 @@ jobs:
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
@@ -135,14 +133,12 @@ jobs:
 
       - name: 💾 Cahce node 💾
         uses: esjzone/cache@main
-        id: node-cache
         with:
           path: |
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -186,14 +182,12 @@ jobs:
 
       - name: 💾 Cahce node 💾
         uses: esjzone/cache@main
-        id: node-cache
         with:
           path: |
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -240,8 +234,7 @@ jobs:
           git push
 
       - name: 🧹 Clean Up 🧹
-        run: |
-          git push origin --delete novels actions-client actions-server
+        run: git push origin --delete novels actions-client actions-server
 
 
   render-pages:
@@ -269,14 +262,12 @@ jobs:
 
       - name: 💾 Cahce node 💾
         uses: esjzone/cache@main
-        id: node-cache
         with:
           path: |
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 🛠 Patch files 🛠
         run: |
@@ -348,8 +339,7 @@ jobs:
           silent: true
 
       - name: 🧹 Clean Up 🧹
-        run: |
-          git push origin :actions-compile
+        run: git push origin :actions-compile
 
   update-timestamp:
     name: 更新最後更新時間
@@ -371,4 +361,3 @@ jobs:
           git add LAST_UPDATE
           git commit -m "Update timestamp" -a -q
           git push
-
