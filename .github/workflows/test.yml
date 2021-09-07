@@ -18,5 +18,5 @@ jobs:
 
       - name: Setup
         run: |
-          cd ${{ secrets.PRIVATE_REPO }}
+          cd esjzone-mirror
           git push origin --delete novels
