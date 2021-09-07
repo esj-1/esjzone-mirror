@@ -406,6 +406,10 @@ jobs:
           repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
           silent: true
 
+      - name: 🧹 Clean Up 🧹
+        run: |
+          git push origin :actions-compile
+
   update-timestamp:
     name: 更新最後更新時間
     needs: merge-all
