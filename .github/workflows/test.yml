@@ -1,0 +1,22 @@
+name: 測試
+
+on:
+  workflow_dispatch:
+
+jobs:
+  merge-branches:
+    name: 合并Repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: Setup
+        run: |
+          cd ${{ secrets.PRIVATE_REPO }}
+          git push origin --delete novels
