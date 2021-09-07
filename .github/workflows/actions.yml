@@ -268,7 +268,6 @@ jobs:
       #          token: ${{ secrets.PA_TOKEN }}
 
       - name: ⏩ Merge branches ⏩
-        uses: esjzone/merge-branch@master
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
