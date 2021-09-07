@@ -18,6 +18,10 @@ jobs:
 
       - name: Setup
         run: |
+          git fetch actions-client
+          git checkout actions-compile
           git merge actions-client
+          git fetch actions-server
+          git checkout actions-compile
           git merge actions-server
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
