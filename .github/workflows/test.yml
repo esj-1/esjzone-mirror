@@ -18,6 +18,4 @@ jobs:
 
       - name: Setup
         run: |
-          branches=""
-          for i in {0..39}; do branches="${branches} actions-compile-$i"; done
-          git push origin -f --delete ${branches}
+          for i in {0..39}; git push origin :actions-compile-$i; done
