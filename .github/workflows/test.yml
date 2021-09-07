@@ -20,4 +20,4 @@ jobs:
         run: |
           branches=""
           for i in {0..39}; do branches="${branches} actions-compile-$i"; done
-          git push origin --delete ${branches}
+          git push origin -f --delete ${branches}
