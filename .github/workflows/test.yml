@@ -19,7 +19,9 @@ jobs:
       - name: Setup
         run: |
           git fetch origin actions-client --depth=1
-          git fetch origin actions-server --depth=1
+          git checkout actions-compile
           git merge actions-client
+          git fetch origin actions-server --depth=1
+          git checkout actions-compile
           git merge actions-server
 #          for i in {0..39}; do git push origin :actions-compile-$i || true; done
