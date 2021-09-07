@@ -13,9 +13,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
-          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          ref: actions-compile
           token: ${{ secrets.PA_TOKEN }}
 
       - name: Setup
         run: |
-          for i in {0..39}; do git push origin :actions-compile-$i || true; done
+          git merge actions-client
+          git merge actions-server
+#          for i in {0..39}; do git push origin :actions-compile-$i || true; done
