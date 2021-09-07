@@ -1,4 +1,4 @@
-name: 同步小説網頁
+name: 更新鏡像網頁
 
 on:
   workflow_dispatch:
@@ -62,10 +62,14 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-compile
           force: true
-
   build-node-cache:
     name: 構建 node_modules
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+      fail-fast: true
 
     steps:
       - name: 📥 Checkout repo branch 📥
@@ -111,7 +115,7 @@ jobs:
   build-client:
     name: 構建 client
     runs-on: macos-latest
-    needs: [sync-esjzone, build-node-cache]
+    needs: [ sync-esjzone, build-node-cache ]
     env:
       CACHE_SKIP_SAVE: true
 
@@ -161,11 +165,10 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-client
           force: true
-
   build-server:
     name: 構建 server
     runs-on: macos-latest
-    needs: [sync-esjzone, build-node-cache]
+    needs: [ sync-esjzone, build-node-cache ]
     env:
       CACHE_SKIP_SAVE: true
 
@@ -241,6 +244,7 @@ jobs:
         run: |
           git push origin --delete novels actions-client actions-server
 
+
   render-pages:
     name: 頁面渲染
     runs-on: ubuntu-latest
@@ -251,6 +255,7 @@ jobs:
     strategy:
       matrix:
         worker-number: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+      fail-fast: true
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -321,6 +326,7 @@ jobs:
           for i in {0..19}; do git push origin :actions-compile-$i || true; done
           git push -f
 
+
   deploy:
     name: 部署
     runs-on: ubuntu-latest
@@ -367,3 +373,4 @@ jobs:
           git add LAST_UPDATE
           git commit -m "Update timestamp" -a -q
           git push
+
