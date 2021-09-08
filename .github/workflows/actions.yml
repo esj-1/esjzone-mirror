@@ -65,13 +65,14 @@ jobs:
           repository: ${{ secrets.PRIVATE_REPO }}
           branch: actions-compile
           force: true
+
   build-node-cache:
     name: 構建 node_modules
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu, macos ]
       fail-fast: true
 
     steps:
@@ -113,11 +114,16 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-  build-client:
-    name: 構建 client
+  build-manfist:
+    name: 構建 ${{ martix.type }} manfist
     runs-on: macos-latest
     needs: [ sync-esjzone, build-node-cache ]
-
+    
+    strategy:
+      matrix:
+        type: [ client, server ]
+      fail-fast: true
+    
     steps:
       - name: 📥 Checkout Actions 📥
         uses: actions/checkout@v2
@@ -146,76 +152,27 @@ jobs:
           docs/.vuepress/scripts/patch.sh
 
       - name: ⚙ Build ⚙
-        run: yarn docs:build_client
+        run: yarn docs:build_${{ matrix.type }}
 
       - name: ✅ Commit changes ✅
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add docs &> /dev/null
-          git commit -m "Update dist client" -a -q
+          git commit -m "Update dist ${{ matrix.type }}" -a -q
 
       - name: 📤 Push commit changes 📤
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PA_TOKEN }}
           repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions-client
-          force: true
-  build-server:
-    name: 構建 server
-    runs-on: macos-latest
-    needs: [ sync-esjzone, build-node-cache ]
-
-    steps:
-      - name: 📥 Checkout Actions 📥
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: novels
-          token: ${{ secrets.PA_TOKEN }}
-
-      - name: ✅ Use Node.js ✅
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-
-      - name: 💾 Cahce node 💾
-        uses: esjzone/cache@main
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: ${{ runner.os }}-node-
-
-      - name: 🛠 Patch files 🛠
-        run: |
-          chmod +x docs/.vuepress/scripts/patch.sh
-          docs/.vuepress/scripts/patch.sh
-
-      - name: ⚙ Build ⚙
-        run: yarn docs:build_server
-
-      - name: ✅ Commit changes ✅
-        run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs &> /dev/null
-          git commit -m "Update dist client" -a -q
-
-      - name: 📤 Push commit changes 📤
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PA_TOKEN }}
-          repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions-server
+          branch: actions-${{ matrix.type }}
           force: true
 
   merge-branches:
-    name: 合并Repo
+    name: 合并 Repo
     runs-on: ubuntu-latest
-    needs: [ build-client, build-server ]
+    needs: build-manfist
 
     steps:
       - name: 📥 Checkout Actions 📥
@@ -240,7 +197,7 @@ jobs:
   render-pages:
     name: 頁面渲染
     runs-on: ubuntu-latest
-    needs: [ build-client, build-server, merge-branches ]
+    needs: [ build-manfist, merge-branches ]
 
     strategy:
       matrix:
@@ -295,7 +252,7 @@ jobs:
   render-pages-mac:
     name: MacOS 頁面渲染
     runs-on: macos-latest
-    needs: [ build-client, build-server, merge-branches ]
+    needs: [ build-manfist, merge-branches ]
 
     strategy:
       matrix:
