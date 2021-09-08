@@ -115,7 +115,7 @@ jobs:
         run: yarn install --silent
 
   build-manfist:
-    name: 構建 ${{ matrix.type }} manfist
+    name: 構建 manfist
     runs-on: macos-latest
     needs: [ sync-esjzone, build-node-cache ]
     
