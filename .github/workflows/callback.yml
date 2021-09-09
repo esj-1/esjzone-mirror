@@ -28,7 +28,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           branches=""
           for ((i=0; i < $total_workers; i++)); do
-            if [[ -ne git ls-remote --heads origin actions-compile-$i ]]; then
+            if [[ git ls-remote --heads origin actions-compile-$i -ne 0 ]]; then
                 echo "Render not complete, exiting."
                 exit 1
             fi
