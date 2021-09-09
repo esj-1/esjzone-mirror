@@ -1,4 +1,4 @@
-name: 🚀 同步 Repo 到全部 Account
+name: 🔄 同步 Repo
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync:
-    name: 🚀 同步
+    name: 🔄 同步 🔄
     if: ${{ github.actor == 'sam01101' }}
     runs-on: ubuntu-latest
 

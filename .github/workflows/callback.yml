@@ -1,0 +1,82 @@
+name: 接收響應
+
+on: repository_dispatch
+
+jobs:
+  check-then-merge:
+    name: 檢查渲染狀態
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: check-render
+      cancel-in-progress: true
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: 🔎 Check -> Merge branches and clean up ⏩
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          branches=""
+          for ((i=0; i < $total_workers; i++)); do
+            if [[ -ne git ls-remote --heads origin actions-compile-$i ]]; then
+                echo "Render not complete, exiting."
+                exit 1
+            fi
+            branches+="actions-compile-$i ";
+          done
+          git fetch $branches --unshallow
+          git merge $branches
+          git push origin --delete $branches
+          git push
+
+  deploy:
+      name: 部署
+      runs-on: ubuntu-latest
+      needs: merge-all
+
+      steps:
+        - name: 📥 Checkout Actions 📥
+          uses: actions/checkout@v2
+          with:
+            repository: ${{ secrets.PRIVATE_REPO }}
+            ref: actions-compile
+            token: ${{ secrets.PA_TOKEN }}
+
+        - name: 🚀 Deploy 🚀
+          uses: JamesIves/github-pages-deploy-action@4.1.4
+          with:
+            branch: gh-pages
+            folder: docs/.vuepress/dist
+            token: ${{ secrets.PA_TOKEN }}
+            repository-name: ${{ secrets.PRIVATE_REPO_DOCS_BRANCH }}
+            silent: true
+
+        - name: 🧹 Clean Up 🧹
+          run: git push origin :actions-compile
+
+  update-timestamp:
+    name: 更新最後更新時間
+    needs: merge-all
+    if: ${{ success() }}
+    continue-on-error: true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout 📥
+        uses: actions/checkout@v2
+
+      - name: ⬆ Update timestamp ⬆
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          date +"%s" > LAST_UPDATE
+          git add LAST_UPDATE
+          git commit -m "Update timestamp" -a -q
+          git push

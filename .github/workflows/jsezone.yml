@@ -1,0 +1,230 @@
+name: Beta-更新鏡像網頁
+
+on:
+  workflow_dispatch:  # Debug
+  schedule:
+    - cron: '55 15 * * *'
+
+env:
+  CACHE_SKIP_SAVE: true
+
+jobs:
+  sync-esjzone:
+    name: 同步 ESJZone
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use PyPy3 ✅
+        uses: actions/setup-python@v2
+        with:
+          python-version: 'pypy-3.7'
+
+      - name: 💾 Cache Python requirements 💾
+        id: cache
+        uses: actions/cache@v2
+        with:
+          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          path: venv
+          restore-keys: venv-new-cache-
+
+      - name: 📥 Install dependencies 📥
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: |
+          python -m venv venv
+          venv/bin/pip install -q -r requirements.txt
+
+      - name: 🔄 Sync ESJZone 🔄
+        run: venv/bin/python main.py
+
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update novel database" -a -q
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: novels
+          force: true
+
+      - name: 📤 Push commit changes (compile branch) 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-compile
+          force: true
+
+  build-node-cache:
+    name: 構建 node_modules
+    runs-on: ${{ matrix.os }}-latest
+
+    strategy:
+      matrix:
+        os: [ ubuntu, macos ]
+      fail-fast: true
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: 💾 Cahce yarn 💾
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: 💾 Cahce node 💾
+        uses: actions/cache@v2
+        id: node-cache
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
+
+  build-manfist:
+    name: 構建 manfist
+    runs-on: macos-latest
+    needs: [ sync-esjzone, build-node-cache ]
+
+    strategy:
+      matrix:
+        type: [ client, server ]
+      fail-fast: true
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: novels
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 💾 Cahce node 💾
+        uses: esjzone/cache@main
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
+
+      - name: ⚙ Build ⚙
+        run: yarn docs:build_${{ matrix.type }}
+
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update dist ${{ matrix.type }}" -a -q
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-${{ matrix.type }}
+          force: true
+
+  merge-branches:
+    name: 合并 Repo
+    runs-on: ubuntu-latest
+    needs: build-manfist
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ⏩ Merge branches ⏩
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git fetch --all --depth=1
+          git merge origin/actions-client origin/actions-server
+          git push
+
+       - name: 🧹 Clean Up 🧹
+         run: git push origin --delete novels actions-client actions-server
+
+  call-workers:
+    name: 調用 Workers
+    runs-on: ubuntu-latest
+    needs: [ build-manfist, merge-branches ]
+
+    steps:
+      - name: 📣 Call 📣
+        run: |
+          tokens=(${{ secrets.ALT_PA_TOKENS }})
+          total_workers=$((${#tokens[@]}*20))
+          for ((i=0; i < ${#tokens[@]}; i++)); do
+            alt_num=$(($i+1))
+            worker_numbers=""
+            start_index=$((20*$i-1))
+            end_index=$((20*$alt_num))
+            if [[ $start_index -lt 0 ]]; then start_index=0; fi
+            for ((num=start_index; num < end_index; num++)); do
+              worker_numbers+="${num},"
+            done
+            end_index=$(($end_index-1))  # Display
+
+            echo "Sending render request ${start_index}-${end_index} to esj-$alt_num"
+            curl -s --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/dispatches" \
+              --header 'Accept: application/vnd.github.v3+json' \
+              --header "Authorization: token ${tokens[$i]}" \
+              --header 'Content-Type: application/json' \
+              --data-raw "{
+                  \"event_type\": \"Workers ${start_index}-${end_index}\",
+                  \"client_payload\": {
+                      \"total_workers\": \"${total_workers}\",
+                      \"worker_numbers\": [${worker_numbers}]
+                  }
+              }"
+            echo "OK"
+          done

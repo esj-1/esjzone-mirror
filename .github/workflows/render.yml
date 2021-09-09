@@ -2,13 +2,125 @@ name: 頁面渲染
 
 on: repository_dispatch
 
-env:
-  CACHE_SKIP_SAVE: true
-
 jobs:
-  print-number:
+  build-node-cache:
+    name: 構建 node_modules
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          echo 'Total workers: ${{ github.event.client_payload.total_workers }} | Worker number: ${{ github.event.client_payload.worker_number }}'
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 📁  Get yarn cache directory path 📁
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: 💾 Cahce yarn 💾
+        uses: esjzone/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: 💾 Cahce node 💾
+        uses: esjzone/cache@v2
+        id: node-cache
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Check cache skippable
+        if: ${{ step.node-cache.outputs.cache-hit != 'true' }}
+        env:
+          CACHE_SKIP_SAVE: false
+
+      - name: 📥 Install yarn dependencies 📥
+        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --silent
+
+  render-pages:
+    name: 頁面渲染
+    runs-on: ubuntu-latest
+    env:
+      CACHE_SKIP_SAVE: true
+
+    strategy:
+      matrix:
+        worker-number: ${{ fromJson(github.event.client_payload.worker_numbers) }}
+      fail-fast: true
+
+    steps:
+      - name: 📥 Checkout Actions 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: actions-compile
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 💾 Cahce node 💾
+        uses: esjzone/cache@main
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: 🛠 Patch files 🛠
+        run: |
+          chmod +x docs/.vuepress/scripts/patch.sh
+          docs/.vuepress/scripts/patch.sh
+
+      - name: ⚙ Server Side Render ⚙
+        run: yarn docs:render_pages ${{ github.event.client_payload.total_workers }} ${{ matrix.worker-number }}
+
+      - name: 🧹 Clean Up 🧹
+        run: |
+          rm -rf docs/novel-*
+          rm -rf docs/block-*
+
+      - name: ✅ Commit changes ✅
+        run: |
+          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs &> /dev/null
+          git commit -m "Update dist from worker ${{ matrix.worker-number }}" -a -q
+
+      - name: 📤 Push commit changes 📤
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PA_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          branch: actions-compile-${{ matrix.worker-number }}
+          force: true
+
+  callback-main-repo:
+    name: 返回響應
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📣 Call 📣
+        run: |
+          curl -s --location --request POST "https://api.github.com/repos/sam01101/esjzone-mirror/dispatches" \
+            --header 'Accept: application/vnd.github.v3+json' \
+            --header "Authorization: token ${{ secrets.PA_TOKEN }}" \
+            --header 'Content-Type: application/json' \
+            --data-raw "{\"event_type\": \"檢查渲染狀態 - 來自 Worker 的回應\"}"
