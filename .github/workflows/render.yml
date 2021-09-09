@@ -11,5 +11,4 @@ jobs:
 
     steps:
       - run: |
-          echo Hello from worker number ${{ github.event.action }}
           echo 'Client payload: ${{ toJson(github.event.client_payload) }}'
