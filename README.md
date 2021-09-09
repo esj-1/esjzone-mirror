@@ -18,8 +18,8 @@
   <a href="https://discord.gg/MNP4egG">
     <img src="https://discordapp.com/api/guilds/847819937858584596/widget.png?style=shield" alt="Discord">
   </a>
-  <a href="https://github.com/sam01101/esjzone-mirror/actions/workflows/actions.yml">
-    <img src="https://github.com/sam01101/esjzone-mirror/actions/workflows/actions.yml/badge.svg?branch=master&event=schedule" alt="actions">
+  <a href="https://github.com/sam01101/esjzone-mirror/actions/workflows/jsezone.yml">
+    <img src="https://github.com/sam01101/esjzone-mirror/actions/workflows/jsezone.yml/badge.svg?branch=master&event=schedule" alt="actions">
   </a>
 </p>
 
