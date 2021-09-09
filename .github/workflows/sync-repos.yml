@@ -18,7 +18,7 @@ jobs:
           for ((i=0; i < ${#tokens[@]}; i++)); do
               alt_num=$(($i+1))
               echo "Syncing repo for esj-${alt_num}..."
-              echo curl --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/merge-upstream" \
+              curl --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/merge-upstream" \
           --header 'Accept: application/vnd.github.v3+json' \
           --header "Authorization: token ${tokens[$i]}" \
           --header 'Content-Type: application/json' \
