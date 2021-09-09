@@ -4,22 +4,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  merge-branches:
-    name: 合并Repo
+  debug:
+    name: 調試
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repo branch 📥
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions-compile
-          token: ${{ secrets.PA_TOKEN }}
-
-      - name: Setup
+      - name: 📣 Call 📣
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git fetch --all --depth=1
-          git merge origin/actions-client origin/actions-server
-#          for i in {0..39}; do git push origin :actions-compile-$i || true; done
+          tokens=(${{ secrets.ALT_PA_TOKENS }})
+          total_workers=$((${#tokens[@]}*20))
+          for ((i=0; i < ${#tokens[@]}; i++)); do
+            alt_num=$(($i+1))
+            worker_numbers=""
+            start_index=$((20*$i-1))
+            end_index=$((20*$alt_num))
+            if [[ $start_index -lt 0 ]]; then start_index=0; fi
+            for ((num=start_index; num < end_index; num++)); do
+              worker_numbers+="${num}"
+              if [[ num -ne $((end_index-1)) ]]; then
+                worker_numbers+=","
+              fi
+            done
+            echo worker_numbers
+            end_index=$(($end_index-1))  # Display
+
+            echo "Sending render request ${start_index}-${end_index} to esj-$alt_num"
+            curl -s --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/dispatches" \
+              --header 'Accept: application/vnd.github.v3+json' \
+              --header "Authorization: token ${tokens[$i]}" \
+              --header 'Content-Type: application/json' \
+              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
+            echo "OK"
+          done
