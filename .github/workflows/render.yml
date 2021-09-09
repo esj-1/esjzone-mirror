@@ -1,0 +1,13 @@
+name: 頁面渲染
+
+on: repository_dispatch
+
+env:
+  CACHE_SKIP_SAVE: true
+
+jobs:
+  print-number:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo Hello from number ${{ github.event.action }}
