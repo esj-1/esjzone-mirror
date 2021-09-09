@@ -211,7 +211,10 @@ jobs:
             end_index=$((20*$alt_num))
             if [[ $start_index -lt 0 ]]; then start_index=0; fi
             for ((num=start_index; num < end_index; num++)); do
-              worker_numbers+="${num},"
+              worker_numbers+="${num}"
+              if [[ num -ne $((end_index-1)) ]]; then
+                worker_numbers+=","
+              fi
             done
             end_index=$(($end_index-1))  # Display
 
@@ -220,6 +223,6 @@ jobs:
               --header 'Accept: application/vnd.github.v3+json' \
               --header "Authorization: token ${tokens[$i]}" \
               --header 'Content-Type: application/json' \
-              --data-raw "{\"event_type\": \"call-render\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
+              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
             echo "OK"
           done
