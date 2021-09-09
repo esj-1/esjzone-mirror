@@ -56,7 +56,6 @@ jobs:
 
       - run: |
           echo github.event.client_payload
-          echo ${{ fromJson(github.event.client_payload) }}
 
   render-pages:
     name: 頁面渲染
