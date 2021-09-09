@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - run: |
-          echo 'Client payload: ${{ toJson(github.event.client_payload) }}'
+          echo 'Total workers: ${{ github.event.client_payload.total_workers }} | Worker number: ${{ github.event.client_payload.worker_number }}'
