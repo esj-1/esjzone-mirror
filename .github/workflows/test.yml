@@ -32,6 +32,6 @@ jobs:
               --header 'Accept: application/vnd.github.v3+json' \
               --header "Authorization: token ${tokens[$i]}" \
               --header 'Content-Type: application/json' \
-              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"include:[${worker_cfg}]\"}}"
+              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"include\":[${worker_cfg}]}}"
             echo "OK"
           done
