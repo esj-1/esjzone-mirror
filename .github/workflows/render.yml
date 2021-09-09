@@ -56,7 +56,7 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-      - run: echo ${{ github.event.client_payload }}
+      - run: echo ${{ github.event.client_payload.include }}
 
   render-pages:
     name: 頁面渲染
