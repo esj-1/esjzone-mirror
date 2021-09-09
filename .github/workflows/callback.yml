@@ -74,8 +74,6 @@ jobs:
 
       - name: ⬆ Update timestamp ⬆
         run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
           date +"%s" > LAST_UPDATE
           git add LAST_UPDATE
           git commit -m "Update timestamp" -a -q
