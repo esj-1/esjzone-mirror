@@ -251,7 +251,7 @@ jobs:
 
   merge-all:
     name: 合并全部頁面
-    needs: [ render-pages, render-pages-mac ]
+    needs: render-pages
     runs-on: ubuntu-latest
 
     steps:
