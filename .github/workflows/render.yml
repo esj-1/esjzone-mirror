@@ -2,6 +2,9 @@ name: 頁面渲染
 
 on: repository_dispatch
 
+env:
+  CACHE_SKIP_SAVE: true
+
 jobs:
   build-node-cache:
     name: 構建 node_modules
@@ -51,12 +54,12 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
+      - run: echo github.event.client_payload; echo ${{ fromJson(github.event.client_payload) }}
+
   render-pages:
     name: 頁面渲染
     needs: build-node-cache
     runs-on: ubuntu-latest
-    env:
-      CACHE_SKIP_SAVE: true
 
     strategy:
       matrix: ${{ fromJson(github.event.client_payload) }}
