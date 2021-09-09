@@ -5,6 +5,7 @@ on: repository_dispatch
 jobs:
   build-node-cache:
     name: 構建 node_modules
+    if: ${{ github.actor != 'sam01101' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -54,13 +55,13 @@ jobs:
 
   render-pages:
     name: 頁面渲染
+    needs: build-node-cache
     runs-on: ubuntu-latest
     env:
       CACHE_SKIP_SAVE: true
 
     strategy:
-      matrix:
-        worker-number: ${{ fromJson(github.event.client_payload.worker_numbers) }}
+      matrix: ${{ fromJson(github.event.client_payload.worker_numbers) }}
       fail-fast: true
 
     steps:
@@ -115,6 +116,7 @@ jobs:
 
   callback-main-repo:
     name: 返回響應
+    needs: render-pages
     runs-on: ubuntu-latest
 
     steps:
