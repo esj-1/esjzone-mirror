@@ -1,9 +1,9 @@
-name: 更新鏡像網頁
+name: 1.0-更新鏡像網頁
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '55 15 * * *'
+#  schedule:
+#    - cron: '55 15 * * *'
 
 env:
   CACHE_SKIP_SAVE: true
