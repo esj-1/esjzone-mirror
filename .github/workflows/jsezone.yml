@@ -118,7 +118,7 @@ jobs:
   build-manfist:
     name: 構建 manfist
     runs-on: macos-latest
-    needs: [ sync-esjzone, build-node-cache ]
+    needs: [ sync-esjzone ] # , build-node-cache
 
     strategy:
       matrix:
