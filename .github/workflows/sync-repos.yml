@@ -8,7 +8,7 @@ on:
 jobs:
   sync:
     name: 🔄 同步 🔄
-    if: ${{ github.actor == 'sam01101' }}
+    if: ${{ github.event.repository.owner.id == 'sam01101' }}
     runs-on: ubuntu-latest
 
     steps:
