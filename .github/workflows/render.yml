@@ -45,9 +45,7 @@ jobs:
 
       - name: Check cache skippable
         if: ${{ steps.node-cache.outputs.cache-hit != 'true' }}
-        run: echo "Not skipping cache save"
-        env:
-          CACHE_SKIP_SAVE: false
+        run: echo "CACHE_SKIP_SAVE=false" >> $GITHUB_ENV
 
       - name: 📥 Install yarn dependencies 📥
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
@@ -61,7 +59,7 @@ jobs:
       CACHE_SKIP_SAVE: true
 
     strategy:
-      matrix: ${{ fromJson(github.event.client_payload.worker_numbers) }}
+      matrix: ${{ fromJson(github.event.client_payload) }}
       fail-fast: true
 
     steps:
