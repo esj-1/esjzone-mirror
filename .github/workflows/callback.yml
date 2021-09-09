@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: callback-from-worker
 
+env:
+  RENDER_COMPLETED: false
+
 jobs:
   check-then-merge:
     name: 檢查渲染狀態
@@ -38,11 +41,13 @@ jobs:
           git merge $branches
           git push origin --delete $branches
           git push
+          echo "RENDER_COMPLETED=true" >> $GITHUB_ENV
 
   deploy:
       name: 部署
       runs-on: ubuntu-latest
       needs: check-then-merge
+      if: ${{ env.RENDER_COMPLETED == 'true' }}
 
       steps:
         - name: 📥 Checkout Actions 📥
