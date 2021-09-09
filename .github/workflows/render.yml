@@ -56,7 +56,6 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-      - run: echo ${{ github.event.client_payload.include }}
 
   render-pages:
     name: 頁面渲染
@@ -65,7 +64,7 @@ jobs:
 
     strategy:
       matrix:
-        worker-number: ${{ github.event.worker_numbers }}
+        worker-number: ${{ github.event.client_payload.worker_numbers }}
       fail-fast: true
 
     steps:
