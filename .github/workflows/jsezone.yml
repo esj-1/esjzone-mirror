@@ -67,7 +67,6 @@ jobs:
           force: true
 
   build-node-cache:
-    if: ${{ false }}  # FIXME Temp disable for debug speed up
     name: 構建 node_modules
     runs-on: ${{ matrix.os }}-latest
 
@@ -118,7 +117,7 @@ jobs:
   build-manfist:
     name: 構建 manfist
     runs-on: macos-latest
-    needs: [ sync-esjzone ] # , build-node-cache
+    needs: [ sync-esjzone, build-node-cache ]
 
     strategy:
       matrix:
