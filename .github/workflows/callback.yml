@@ -42,7 +42,8 @@ jobs:
             fi
             branches+="actions-compile-$i ";
           done
-          git fetch $branches --unshallow
+          echo "Render completed, start merging..."
+          git fetch --unshallow -j100 origin $branches
           git merge $branches
           git push origin --delete $branches
           git push
