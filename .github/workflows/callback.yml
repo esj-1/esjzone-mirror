@@ -36,7 +36,7 @@ jobs:
           branches=""
           for ((i=0; i < $total_workers; i++)); do
             echo "Checking actions-compile-$i"
-            if [[ $(git ls-remote --exit-code --heads -q origin actions-compile-$i) -ne 0 ]]; then
+            if [[ $(git ls-remote --heads origin actions-compile-$i | wc -l) -ne 0 ]]; then
                 echo "Render not completed yet, exiting."
                 exit 1
             fi
