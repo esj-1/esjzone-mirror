@@ -46,7 +46,7 @@ jobs:
           done
           echo "Render completed, start merging..."
           git fetch --unshallow -j100 origin $branches
-          git merge origin_branches
+          git merge $origin_branches
           git push origin --delete $branches
           git push
           echo "::set-output name=RENDER_COMPLETED::true"
