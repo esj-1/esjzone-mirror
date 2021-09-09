@@ -190,8 +190,8 @@ jobs:
           git merge origin/actions-client origin/actions-server
           git push
 
-       - name: 🧹 Clean Up 🧹
-         run: git push origin --delete novels actions-client actions-server
+      - name: 🧹 Clean Up 🧹
+        run: git push origin --delete novels actions-client actions-server
 
   call-workers:
     name: 調用 Workers

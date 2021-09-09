@@ -44,6 +44,7 @@ jobs:
 
       - name: Check cache skippable
         if: ${{ step.node-cache.outputs.cache-hit != 'true' }}
+        run: echo "Not skipping cache save"
         env:
           CACHE_SKIP_SAVE: false
 
