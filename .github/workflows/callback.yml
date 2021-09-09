@@ -34,17 +34,19 @@ jobs:
           tokens=(${{ secrets.ALT_PA_TOKENS }})
           total_workers=$((${#tokens[@]}*20))
           branches=""
+          origin_branches="" # origin/branch
           for ((i=0; i < $total_workers; i++)); do
             echo "Checking actions-compile-$i"
             if [[ $(git ls-remote --heads origin actions-compile-$i | wc -l) -ne 1 ]]; then
                 echo "Render not completed yet, exiting."
                 exit 0
             fi
-            branches+="actions-compile-$i ";
+            branches+="actions-compile-$i "
+            origin_branches+="origin/actions-compile-$i "
           done
           echo "Render completed, start merging..."
           git fetch --unshallow -j100 origin $branches
-          git merge $branches
+          git merge origin_branches
           git push origin --delete $branches
           git push
           echo "::set-output name=RENDER_COMPLETED::true"
