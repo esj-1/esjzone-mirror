@@ -14,6 +14,9 @@ jobs:
       group: check-render
       cancel-in-progress: true
 
+    outputs:
+      RENDER_COMPLETED: ${{ steps.render-check.outputs.RENDER_COMPLETED }}
+
     steps:
       - name: 📥 Checkout repo branch 📥
         uses: actions/checkout@v2
@@ -46,7 +49,7 @@ jobs:
       name: 部署
       runs-on: ubuntu-latest
       needs: check-then-merge
-      if: ${{ steps.render-check.outputs.RENDER_COMPLETED == 'true' }}
+      if: ${{ needs.check-then-merge.outputs.RENDER_COMPLETED == 'true' }}
 
       steps:
         - name: 📥 Checkout Actions 📥
