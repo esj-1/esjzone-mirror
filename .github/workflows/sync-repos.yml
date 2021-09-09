@@ -3,7 +3,7 @@ name: 🚀 同步 Repo 到全部 Account
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   sync:
