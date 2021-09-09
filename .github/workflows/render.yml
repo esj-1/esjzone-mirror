@@ -10,7 +10,7 @@ env:
 jobs:
   build-node-cache:
     name: 構建 node_modules
-    if: ${{ github.event.repository.owner.id != 'sam01101' }}
+    if: ${{ github.event.repository.owner.login != 'sam01101' }}
     runs-on: ubuntu-latest
 
     steps:

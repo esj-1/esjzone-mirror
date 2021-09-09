@@ -7,7 +7,7 @@ on:
 jobs:
   check-then-merge:
     name: 檢查渲染狀態
-    if: ${{ github.event.repository.owner.id == 'sam01101' }}
+    if: ${{ github.event.repository.owner.login == 'sam01101' }}
     runs-on: ubuntu-latest
 
     concurrency:
