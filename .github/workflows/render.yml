@@ -1,6 +1,8 @@
 name: 頁面渲染
 
-on: repository_dispatch
+on:
+  repository_dispatch:
+    types: call-render
 
 env:
   CACHE_SKIP_SAVE: true
@@ -54,8 +56,7 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-      - run: |
-          echo github.event.client_payload
+      - run: echo ${{ github.event.client_payload }}
 
   render-pages:
     name: 頁面渲染
@@ -128,4 +129,4 @@ jobs:
             --header 'Accept: application/vnd.github.v3+json' \
             --header "Authorization: token ${{ secrets.PA_TOKEN }}" \
             --header 'Content-Type: application/json' \
-            --data-raw "{\"event_type\": \"檢查渲染狀態 - 來自 Worker 的回應\"}"
+            --data-raw "{\"event_type\": \"callback-from-worker\"}"

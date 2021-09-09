@@ -1,6 +1,8 @@
 name: 接收響應
 
-on: repository_dispatch
+on:
+  repository_dispatch:
+    types: callback-from-worker
 
 jobs:
   check-then-merge:

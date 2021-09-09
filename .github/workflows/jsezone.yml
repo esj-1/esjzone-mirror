@@ -220,6 +220,6 @@ jobs:
               --header 'Accept: application/vnd.github.v3+json' \
               --header "Authorization: token ${tokens[$i]}" \
               --header 'Content-Type: application/json' \
-              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
+              --data-raw "{\"event_type\": \"call-render\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
             echo "OK"
           done

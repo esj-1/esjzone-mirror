@@ -28,10 +28,11 @@ jobs:
             end_index=$(($end_index-1))  # Display
 
             echo "Sending render request ${start_index}-${end_index} to esj-$alt_num"
+            echo "{\"event_type\": \"call-render\", \"client_payload\": {\"include\":[${worker_cfg}]}}"
             curl -s --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/dispatches" \
               --header 'Accept: application/vnd.github.v3+json' \
               --header "Authorization: token ${tokens[$i]}" \
               --header 'Content-Type: application/json' \
-              --data-raw "{\"event_type\": \"Workers ${start_index}-${end_index}\", \"client_payload\": {\"include\":[${worker_cfg}]}}"
+              --data-raw "{\"event_type\": \"call-render\", \"client_payload\": {\"include\":[${worker_cfg}]}}"
             echo "OK"
           done
