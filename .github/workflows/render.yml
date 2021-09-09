@@ -64,7 +64,8 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      matrix: ${{ fromJson(github.event.client_payload) }}
+      matrix:
+        worker-number: ${{ github.event.worker_numbers }}
       fail-fast: true
 
     steps:
