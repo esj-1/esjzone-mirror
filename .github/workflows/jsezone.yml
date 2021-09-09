@@ -67,6 +67,7 @@ jobs:
           force: true
 
   build-node-cache:
+    if: ${{ false }}  # FIXME Temp disable for debug speed up
     name: 構建 node_modules
     runs-on: ${{ matrix.os }}-latest
 
@@ -186,7 +187,7 @@ jobs:
         run: |
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git fetch ${{ secrets.PRIVATE_REPO_NAME }}/actions-client ${{ secrets.PRIVATE_REPO_NAME }}/actions-server --depth=1
+          git fetch --all --depth=1
           git merge origin/actions-client origin/actions-server
           git push
 
