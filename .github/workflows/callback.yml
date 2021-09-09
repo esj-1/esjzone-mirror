@@ -31,12 +31,14 @@ jobs:
           echo "::set-output name=RENDER_COMPLETED::false"
           git config --local user.email "25792361+sam01101@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          tokens=(${{ secrets.ALT_PA_TOKENS }})
+          total_workers=$((${#tokens[@]}*20))
           branches=""
           for ((i=0; i < $total_workers; i++)); do
             echo "Checking actions-compile-$i"
             if [[ $(git ls-remote --exit-code --heads origin actions-compile-$i) -ne 0 ]]; then
                 echo "Render not completed yet, exiting."
-                exit 0
+                exit 1
             fi
             branches+="actions-compile-$i ";
           done
