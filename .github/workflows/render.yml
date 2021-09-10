@@ -12,6 +12,10 @@ jobs:
     name: 構建 node_modules
     if: ${{ github.event.repository.owner.login != 'sam01101' }}
     runs-on: ubuntu-latest
+    
+    concurrency:
+      group: render
+      cancel-in-progress: true
 
     steps:
       - name: 📥 Checkout repo branch 📥
