@@ -209,7 +209,7 @@ jobs:
           for ((i=0; i < ${#tokens[@]}; i++)); do
             alt_num=$(($i+1))
             worker_numbers=""
-            start_index=$((20*$i-1))
+            start_index=$((20*$i))
             end_index=$((20*$alt_num))
             if [[ $start_index -lt 0 ]]; then start_index=0; fi
             for ((num=start_index; num < end_index; num++)); do
