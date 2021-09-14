@@ -13,7 +13,7 @@ jobs:
     name: 同步 ESJZone
     runs-on: ubuntu-latest
 
-    concurrency:
+    concurrency:  
       group: jsezone
 
     steps:
