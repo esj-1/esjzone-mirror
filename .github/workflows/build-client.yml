@@ -1,0 +1,46 @@
+name: 構建網頁
+
+on:
+  workflow_dispatch:
+
+env:
+  CACHE_SKIP_SAVE: true
+
+jobs:
+  build-client:
+    name: 構建 Client
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo branch 📥
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.PRIVATE_REPO }}
+          ref: ${{ secrets.PRIVATE_REPO_BRANCH }}
+          token: ${{ secrets.PA_TOKEN }}
+
+      - name: ✅ Use Node.js ✅
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 💾 Cahce node 💾
+        uses: esjzone/cache@main
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: ⚙ Build ⚙
+        run: yarn build
+
+      - name: 🚀 Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: dist
+          token: ${{ secrets.PA_TOKEN }}
+          repository-name: sam01101/jsezone
+          silent: true

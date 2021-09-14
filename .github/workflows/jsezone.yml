@@ -103,115 +103,115 @@ jobs:
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || steps.node-cache.outputs.cache-hit != 'true' }}
         run: yarn install --silent
 
-  build-manfist:
-    name: 構建 manfist
-    if: ${{ false }}
-    runs-on: macos-latest
-    needs: [ sync-esjzone, build-node-cache ]
-
-    strategy:
-      matrix:
-        type: [ client, server ]
-      fail-fast: true
-
-    steps:
-      - name: 📥 Checkout Actions 📥
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: novels
-          token: ${{ secrets.PA_TOKEN }}
-
-      - name: ✅ Use Node.js ✅
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-
-      - name: 💾 Cahce node 💾
-        uses: esjzone/cache@main
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: ${{ runner.os }}-node-
-
-      - name: 🛠 Patch files 🛠
-        run: |
-          chmod +x docs/.vuepress/scripts/patch.sh
-          docs/.vuepress/scripts/patch.sh
-
-      - name: ⚙ Build ⚙
-        run: yarn docs:build_${{ matrix.type }}
-
-      - name: ✅ Commit changes ✅
-        run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs &> /dev/null
-          git commit -m "Update dist ${{ matrix.type }}" -a -q
-
-      - name: 📤 Push commit changes 📤
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PA_TOKEN }}
-          repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions-${{ matrix.type }}
-          force: true
-
-  merge-branches:
-    name: 合并 Repo
-    runs-on: ubuntu-latest
-    needs: build-manfist
-
-    steps:
-      - name: 📥 Checkout Actions 📥
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          ref: actions-compile
-          token: ${{ secrets.PA_TOKEN }}
-
-      - name: ⏩ Merge branches ⏩
-        run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git fetch --unshallow -j2 origin actions-client actions-server
-          git merge origin/actions-client origin/actions-server
-          git push
-
-      - name: 🧹 Clean Up 🧹
-        run: git push origin --delete novels actions-client actions-server
-
-  call-workers:
-    name: 調用 Workers
-    runs-on: ubuntu-latest
-    needs: [ build-manfist, merge-branches ]
-
-    steps:
-      - name: 📣 Call 📣
-        run: |
-          tokens=(${{ secrets.ALT_PA_TOKENS }})
-          total_workers=$((${#tokens[@]}*20))
-          for ((i=0; i < ${#tokens[@]}; i++)); do
-            alt_num=$(($i+1))
-            worker_numbers=""
-            start_index=$((20*$i))
-            end_index=$((20*$alt_num))
-            if [[ $start_index -lt 0 ]]; then start_index=0; fi
-            for ((num=start_index; num < end_index; num++)); do
-              worker_numbers+="${num}"
-              if [[ num -ne $((end_index-1)) ]]; then
-                worker_numbers+=","
-              fi
-            done
-            end_index=$(($end_index-1))  # Display
-
-            echo "Sending render request ${start_index}-${end_index} to esj-$alt_num"
-            curl -s --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/dispatches" \
-              --header 'Accept: application/vnd.github.v3+json' \
-              --header "Authorization: token ${tokens[$i]}" \
-              --header 'Content-Type: application/json' \
-              --data-raw "{\"event_type\": \"call-render\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
-            echo "OK"
-          done
+#  build-manfist:
+#    name: 構建 manfist
+#    if: ${{ false }}
+#    runs-on: macos-latest
+#    needs: [ sync-esjzone, build-node-cache ]
+#
+#    strategy:
+#      matrix:
+#        type: [ client, server ]
+#      fail-fast: true
+#
+#    steps:
+#      - name: 📥 Checkout Actions 📥
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          ref: novels
+#          token: ${{ secrets.PA_TOKEN }}
+#
+#      - name: ✅ Use Node.js ✅
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: '14.x'
+#
+#      - name: 💾 Cahce node 💾
+#        uses: esjzone/cache@main
+#        with:
+#          path: |
+#            node_modules
+#            */*/node_modules
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+#          restore-keys: ${{ runner.os }}-node-
+#
+#      - name: 🛠 Patch files 🛠
+#        run: |
+#          chmod +x docs/.vuepress/scripts/patch.sh
+#          docs/.vuepress/scripts/patch.sh
+#
+#      - name: ⚙ Build ⚙
+#        run: yarn docs:build_${{ matrix.type }}
+#
+#      - name: ✅ Commit changes ✅
+#        run: |
+#          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+#          git config --local user.name "github-actions[bot]"
+#          git add docs &> /dev/null
+#          git commit -m "Update dist ${{ matrix.type }}" -a -q
+#
+#      - name: 📤 Push commit changes 📤
+#        uses: ad-m/github-push-action@master
+#        with:
+#          github_token: ${{ secrets.PA_TOKEN }}
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          branch: actions-${{ matrix.type }}
+#          force: true
+#
+#  merge-branches:
+#    name: 合并 Repo
+#    runs-on: ubuntu-latest
+#    needs: build-manfist
+#
+#    steps:
+#      - name: 📥 Checkout Actions 📥
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ${{ secrets.PRIVATE_REPO }}
+#          ref: actions-compile
+#          token: ${{ secrets.PA_TOKEN }}
+#
+#      - name: ⏩ Merge branches ⏩
+#        run: |
+#          git config --local user.email "25792361+sam01101@users.noreply.github.com"
+#          git config --local user.name "github-actions[bot]"
+#          git fetch --unshallow -j2 origin actions-client actions-server
+#          git merge origin/actions-client origin/actions-server
+#          git push
+#
+#      - name: 🧹 Clean Up 🧹
+#        run: git push origin --delete novels actions-client actions-server
+#
+#  call-workers:
+#    name: 調用 Workers
+#    runs-on: ubuntu-latest
+#    needs: [ build-manfist, merge-branches ]
+#
+#    steps:
+#      - name: 📣 Call 📣
+#        run: |
+#          tokens=(${{ secrets.ALT_PA_TOKENS }})
+#          total_workers=$((${#tokens[@]}*20))
+#          for ((i=0; i < ${#tokens[@]}; i++)); do
+#            alt_num=$(($i+1))
+#            worker_numbers=""
+#            start_index=$((20*$i))
+#            end_index=$((20*$alt_num))
+#            if [[ $start_index -lt 0 ]]; then start_index=0; fi
+#            for ((num=start_index; num < end_index; num++)); do
+#              worker_numbers+="${num}"
+#              if [[ num -ne $((end_index-1)) ]]; then
+#                worker_numbers+=","
+#              fi
+#            done
+#            end_index=$(($end_index-1))  # Display
+#
+#            echo "Sending render request ${start_index}-${end_index} to esj-$alt_num"
+#            curl -s --location --request POST "https://api.github.com/repos/esj-${alt_num}/esjzone-mirror/dispatches" \
+#              --header 'Accept: application/vnd.github.v3+json' \
+#              --header "Authorization: token ${tokens[$i]}" \
+#              --header 'Content-Type: application/json' \
+#              --data-raw "{\"event_type\": \"call-render\", \"client_payload\": {\"total_workers\": \"${total_workers}\", \"worker_numbers\": [${worker_numbers}]}}"
+#            echo "OK"
+#          done
