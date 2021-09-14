@@ -6,7 +6,7 @@ on:
     - cron: '55 15 * * *'
 
 env:
-  CACHE_SKIP_SAVE: true
+  CACHE_SKIP_SAVE: false
 
 jobs:
   sync-esjzone:
