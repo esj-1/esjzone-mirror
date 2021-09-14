@@ -33,7 +33,7 @@ jobs:
         id: cache
         uses: actions/cache@v2
         with:
-          key: ${{ runner.os }}-venv-cache-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-venv-cache-${{ hashFiles('**/scripts/requirements.txt') }}
           path: venv
           restore-keys: ${{ runner.os }}-venv-cache-
 
@@ -41,7 +41,7 @@ jobs:
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: |
           python -m venv venv
-          venv/bin/pip install -q -r requirements.txt
+          venv/bin/pip install -q -r scripts/requirements.txt
 
       - name: 🔄 Sync ESJZone 🔄
         run: venv/bin/python scripts/main.py
