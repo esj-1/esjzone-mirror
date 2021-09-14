@@ -13,7 +13,7 @@ jobs:
     name: 同步 ESJZone
     runs-on: ubuntu-latest
 
-    concurrency:  
+    concurrency:
       group: jsezone
 
     steps:
@@ -47,13 +47,13 @@ jobs:
         run: venv/bin/python scripts/main.py
 
       - name: 🚀 Deploy 🚀
-          uses: JamesIves/github-pages-deploy-action@4.1.4
-          with:
-            branch: data
-            folder: dist
-            token: ${{ secrets.PA_TOKEN }}
-            repository-name: sam01101/jsezone-novels
-            silent: true
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: data
+          folder: dist
+          token: ${{ secrets.PA_TOKEN }}
+          repository-name: sam01101/jsezone-novels
+          silent: true
 
   build-node-cache:
     name: 構建 node_modules
