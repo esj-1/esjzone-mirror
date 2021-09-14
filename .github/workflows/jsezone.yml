@@ -33,9 +33,9 @@ jobs:
         id: cache
         uses: actions/cache@v2
         with:
-          key: venv-new-cache-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-venv-cache-${{ hashFiles('**/requirements.txt') }}
           path: venv
-          restore-keys: venv-new-cache-
+          restore-keys: ${{ runner.os }}-venv-cache-
 
       - name: 📥 Install dependencies 📥
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -44,30 +44,16 @@ jobs:
           venv/bin/pip install -q -r requirements.txt
 
       - name: 🔄 Sync ESJZone 🔄
-        run: venv/bin/python main.py
+        run: venv/bin/python scripts/main.py
 
-      - name: ✅ Commit changes ✅
-        run: |
-          git config --local user.email "25792361+sam01101@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs &> /dev/null
-          git commit -m "Update novel database" -a -q
-
-      - name: 📤 Push commit changes 📤
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PA_TOKEN }}
-          repository: ${{ secrets.PRIVATE_REPO }}
-          branch: novels
-          force: true
-
-      - name: 📤 Push commit changes (compile branch) 📤
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PA_TOKEN }}
-          repository: ${{ secrets.PRIVATE_REPO }}
-          branch: actions-compile
-          force: true
+      - name: 🚀 Deploy 🚀
+          uses: JamesIves/github-pages-deploy-action@4.1.4
+          with:
+            branch: data
+            folder: dist
+            token: ${{ secrets.PA_TOKEN }}
+            repository-name: sam01101/jsezone-novels
+            silent: true
 
   build-node-cache:
     name: 構建 node_modules
@@ -119,6 +105,7 @@ jobs:
 
   build-manfist:
     name: 構建 manfist
+    if: ${{ false }}
     runs-on: macos-latest
     needs: [ sync-esjzone, build-node-cache ]
 
