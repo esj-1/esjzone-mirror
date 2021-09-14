@@ -11,7 +11,6 @@ env:
 jobs:
   sync-esjzone:
     name: 同步 ESJZone
-    if: ${{ github.event.repository.owner.login == 'sam01101' }}
     runs-on: ubuntu-latest
 
     concurrency:
